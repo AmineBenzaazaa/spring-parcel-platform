@@ -27,9 +27,12 @@ public class AuthController {
     private final LoginService loginService;
     private final JWKSet jwkSet;
 
-    public AuthController(LoginService loginService, JWKSet jwkSet) {
+    private final TokenService tokenService;
+
+    public AuthController(LoginService loginService, JWKSet jwkSet, TokenService tokenService) {
         this.loginService = loginService;
         this.jwkSet = jwkSet;
+        this.tokenService = tokenService;
     }
 
     @Operation(summary = "Exchange username/password for an RS256 access token")
@@ -42,6 +45,12 @@ public class AuthController {
     @GetMapping("/api/auth/me")
     public AuthenticatedUser me(@AuthenticationPrincipal Jwt jwt) {
         return AuthenticatedUser.from(jwt);
+    }
+
+    @Operation(summary = "Exchange the current token for a 60-second token that can only open the live event stream")
+    @PostMapping("/api/auth/stream-token")
+    public TokenService.TokenResponse streamToken(@AuthenticationPrincipal Jwt jwt) {
+        return tokenService.issueStreamToken(jwt);
     }
 
     /** Public keys only: toPublicJWKSet() strips the private exponent. Resource servers cache this. */

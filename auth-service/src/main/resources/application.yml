@@ -23,6 +23,8 @@ spring:
 auth:
   issuer: ${AUTH_ISSUER:http://auth-service:8081}
   token-ttl: ${AUTH_TOKEN_TTL:1h}
+  # EventSource cannot send headers: the live stream gets its own token, valid for seconds, in the URL
+  stream-token-ttl: ${AUTH_STREAM_TOKEN_TTL:60s}
   seed-demo-users: ${AUTH_SEED_DEMO_USERS:true}
 
 management:

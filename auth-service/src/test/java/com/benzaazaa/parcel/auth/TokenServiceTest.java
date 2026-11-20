@@ -71,6 +71,27 @@ class TokenServiceTest {
     }
 
     @Test
+    void streamTokenCopiesIdentityButLivesSecondsAndIsMarkedForTheStreamOnly() throws Exception {
+        RSAKey key = keys.signingKey();
+        var service = new TokenService(keys.jwtEncoder(keys.jwkSet(key)), Clock.systemUTC(), "http://auth-test",
+                Duration.ofHours(1), Duration.ofSeconds(45));
+        JwtDecoder decoder = keys.jwtDecoder(key);
+        Jwt session = decoder.decode(service.issue(
+                new UserAccount("merchant.atlas", "h", Role.MERCHANT, "M-1001", null, Instant.now())).accessToken());
+
+        var response = service.issueStreamToken(session);
+        Jwt stream = decoder.decode(response.accessToken());
+
+        assertThat(stream.getSubject()).isEqualTo("merchant.atlas");
+        assertThat(stream.getClaimAsStringList("roles")).containsExactly("MERCHANT");
+        assertThat(stream.getClaimAsString("merchantId")).isEqualTo("M-1001");
+        assertThat(stream.getClaimAsString(TokenService.TOKEN_USE_CLAIM)).isEqualTo(TokenService.TOKEN_USE_STREAM);
+        assertThat(Duration.between(stream.getIssuedAt(), stream.getExpiresAt())).isEqualTo(Duration.ofSeconds(45));
+        assertThat(response.expiresIn()).isEqualTo(45);
+        assertThat(session.getClaims()).doesNotContainKey(TokenService.TOKEN_USE_CLAIM);
+    }
+
+    @Test
     void userInvariantsRequireMerchantOrCourierIds() {
         assertThatThrownBy(() -> new UserAccount("m", "h", Role.MERCHANT, null, null, Instant.now()))
                 .isInstanceOf(IllegalArgumentException.class);

@@ -107,6 +107,18 @@ class AuthApiIntegrationTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    void streamTokenRequiresAValidSessionToken() throws Exception {
+        mvc.perform(post("/api/auth/stream-token")).andExpect(status().isUnauthorized());
+
+        String token = login("ops", DemoUserSeeder.DEMO_PASSWORD);
+        mvc.perform(post("/api/auth/stream-token").header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.expiresIn").value(60))
+                .andExpect(jsonPath("$.role").value("OPS"))
+                .andExpect(jsonPath("$.accessToken").isNotEmpty());
+    }
+
     record LoginBody(String username, String password) {
     }
 }
