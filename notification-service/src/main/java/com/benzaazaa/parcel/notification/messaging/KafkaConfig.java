@@ -19,6 +19,12 @@ public class KafkaConfig {
         return TopicBuilder.name(Topics.DELIVERY_STATUS).partitions(3).replicas(1).build();
     }
 
+    /** Read by the live activity stream (own consumer group); created here too so startup order does not matter. */
+    @Bean
+    NewTopic orderEventsTopic() {
+        return TopicBuilder.name(Topics.ORDER_EVENTS).partitions(3).replicas(1).build();
+    }
+
     @Bean
     NewTopic deliveryStatusDlt() {
         return TopicBuilder.name(KafkaErrorHandling.dltTopic(Topics.DELIVERY_STATUS, GROUP)).partitions(1).replicas(1)

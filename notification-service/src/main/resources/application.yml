@@ -20,6 +20,9 @@ spring:
   mvc:
     problemdetails:
       enabled: true
+    async:
+      # SSE responses are long-lived; the emitter sets its own timeout
+      request-timeout: -1
   security:
     oauth2:
       resourceserver:
@@ -51,6 +54,13 @@ parcel:
     enabled: false   # this service only consumes
   security:
     public-paths: /actuator/**,/v3/api-docs/**,/swagger-ui/**,/swagger-ui.html,/fake-sms/**
+    # EventSource cannot send headers: only this GET path may carry ?access_token= (a 60 s stream token)
+    query-token-paths: /api/activity/stream
+  live:
+    # one consumer group PER INSTANCE: every replica must see every event (broadcast to its browsers)
+    group-id: notification-live-${random.uuid}
+    auto-offset-reset: latest
+    heartbeat-ms: 15000
 
 notification:
   sms:

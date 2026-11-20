@@ -9,6 +9,8 @@ import com.benzaazaa.parcel.notification.sender.NotificationSender;
 import com.benzaazaa.parcel.notification.sender.OutgoingMessage;
 import com.benzaazaa.parcel.support.messaging.IdempotencyGuard;
 import io.micrometer.core.instrument.MeterRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,14 +29,23 @@ public class NotificationService {
     private final IdempotencyGuard idempotency;
     private final Clock clock;
     private final MeterRegistry meters;
+    private final ApplicationEventPublisher events;
 
     public NotificationService(List<NotificationSender> senders, NotificationRepository notifications,
                                IdempotencyGuard idempotency, Clock clock, MeterRegistry meters) {
+        this(senders, notifications, idempotency, clock, meters, event -> { });
+    }
+
+    @Autowired
+    public NotificationService(List<NotificationSender> senders, NotificationRepository notifications,
+                               IdempotencyGuard idempotency, Clock clock, MeterRegistry meters,
+                               ApplicationEventPublisher events) {
         this.senders = senders;
         this.notifications = notifications;
         this.idempotency = idempotency;
         this.clock = clock;
         this.meters = meters;
+        this.events = events;
     }
 
     /**
@@ -56,8 +67,9 @@ public class NotificationService {
         var message = new OutgoingMessage(event.orderId(), event.trackingCode(), event.recipientPhone(), text.get());
         for (NotificationSender sender : senders) {
             DeliveryResult result = sender.send(message);
-            notifications.save(new Notification(eventId, event.orderId(), event.trackingCode(), sender.channel(),
-                    event.recipientPhone(), text.get(), result, clock.instant()));
+            Notification saved = notifications.save(new Notification(eventId, event.orderId(), event.trackingCode(),
+                    sender.channel(), event.recipientPhone(), text.get(), result, clock.instant()));
+            events.publishEvent(new NotificationRecorded(saved));
             meters.counter("parcel.notifications", "channel", sender.channel().name(),
                     "result", result.status().name()).increment();
         }
