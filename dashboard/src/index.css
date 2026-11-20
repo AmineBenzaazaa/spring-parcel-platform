@@ -1,0 +1,64 @@
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design tokens: neutral surfaces, one indigo accent, status hues defined per component. */
+:root {
+  --bg: 250 250 251;
+  --panel: 255 255 255;
+  --subtle: 244 244 246;
+  --line: 230 230 235;
+  --fg: 17 17 22;
+  --muted: 100 100 112;
+  --faint: 150 150 162;
+  --accent: 91 91 214;
+  --accent-fg: 255 255 255;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: 11 11 14;
+  --panel: 19 19 23;
+  --subtle: 27 27 33;
+  --line: 40 40 48;
+  --fg: 237 237 242;
+  --muted: 155 155 168;
+  --faint: 105 105 118;
+  --accent: 129 131 255;
+  --accent-fg: 12 12 20;
+  color-scheme: dark;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-bg text-fg font-sans antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  ::selection {
+    background: rgb(var(--accent) / 0.25);
+  }
+}
+
+@layer components {
+  .panel {
+    @apply rounded-xl border border-line bg-panel shadow-card;
+  }
+  .label {
+    @apply text-[11px] font-medium uppercase tracking-[0.06em] text-faint;
+  }
+  .focus-ring {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bg;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--line)) transparent;
+  }
+}
