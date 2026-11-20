@@ -19,6 +19,7 @@
     <description>Event-driven parcel delivery platform (cash-on-delivery logistics)</description>
 
     <modules>
+        <module>common-events</module>
     </modules>
 
     <properties>
