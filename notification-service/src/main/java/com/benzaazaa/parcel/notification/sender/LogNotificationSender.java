@@ -25,7 +25,7 @@ public class LogNotificationSender implements NotificationSender {
     }
 
     /** No full phone numbers in logs (privacy): +212612345678 -> +2126*****678 */
-    static String mask(String phone) {
+    public static String mask(String phone) {
         if (phone == null || phone.length() < 8) {
             return "***";
         }
