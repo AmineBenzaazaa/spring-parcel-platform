@@ -1,0 +1,119 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: notification-service
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:notificationdb}
+    username: ${DB_USER:parcel}
+    password: ${DB_PASSWORD:parcel}
+    hikari:
+      maximum-pool-size: 8
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    # service migrations + shared outbox/processed_event tables from service-support
+    locations: classpath:db/migration,classpath:db/messaging
+  mvc:
+    problemdetails:
+      enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${AUTH_JWKS_URI:http://localhost:8081/.well-known/jwks.json}
+          issuer-uri: ${AUTH_ISSUER:http://auth-service:8081}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9094}
+    producer:
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        enable.idempotence: true
+        linger.ms: 5
+    consumer:
+      group-id: notification-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      ack-mode: record
+      observation-enabled: true
+    template:
+      observation-enabled: true
+
+parcel:
+  outbox:
+    enabled: false   # this service only consumes
+  security:
+    public-paths: /actuator/**,/v3/api-docs/**,/swagger-ui/**,/swagger-ui.html,/fake-sms/**
+
+notification:
+  sms:
+    enabled: ${NOTIFICATION_SMS_ENABLED:true}
+    base-url: ${NOTIFICATION_SMS_BASE_URL:http://localhost:8084/fake-sms}
+    connect-timeout: 1s
+    read-timeout: 3s
+  fake-sms:
+    # in-process stand-in for an external SMS provider (Twilio/Infobip-like); toggle failures to see the breaker open
+    enabled: ${NOTIFICATION_FAKE_SMS_ENABLED:true}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      smsGateway:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 2
+        automatic-transition-from-open-to-half-open-enabled: true
+        record-exceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
+  retry:
+    instances:
+      smsGateway:
+        max-attempts: 3
+        wait-duration: 200ms
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+        retry-exceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
+        ignore-exceptions:
+          - io.github.resilience4j.circuitbreaker.CallNotPermittedException
+  timelimiter:
+    instances:
+      smsGateway:
+        timeout-duration: 2s
+        cancel-running-future: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-},corr=%X{correlationId:-}]"
