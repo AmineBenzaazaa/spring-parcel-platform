@@ -2,6 +2,8 @@ package com.benzaazaa.parcel.order.web;
 
 import com.benzaazaa.parcel.order.application.CreateOrderCommand;
 import com.benzaazaa.parcel.order.application.OrderService;
+import com.benzaazaa.parcel.order.application.OrderStats;
+import com.benzaazaa.parcel.order.domain.OrderStatus;
 import com.benzaazaa.parcel.order.domain.Order;
 import com.benzaazaa.parcel.order.web.OrderDtos.CancelOrderRequest;
 import com.benzaazaa.parcel.order.web.OrderDtos.CreateOrderRequest;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -65,13 +68,20 @@ public class OrderController {
         return OrderResponse.from(orders.get(id, AuthenticatedUser.from(jwt)));
     }
 
-    @Operation(summary = "List orders, newest first")
+    @Operation(summary = "List orders, newest first; repeat ?status= to filter (e.g. status=ASSIGNED&status=OUT_FOR_DELIVERY)")
     @GetMapping
     public PageResponse<OrderResponse> list(@AuthenticationPrincipal Jwt jwt,
-            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size,
+            @RequestParam(name = "status", required = false) List<OrderStatus> statuses) {
         var pageable = PageRequest.of(Math.max(page, 0), Math.min(Math.max(size, 1), 100),
                 Sort.by(Sort.Direction.DESC, "createdAt"));
-        return PageResponse.from(orders.list(AuthenticatedUser.from(jwt), pageable));
+        return PageResponse.from(orders.list(AuthenticatedUser.from(jwt), statuses, pageable));
+    }
+
+    @Operation(summary = "KPIs for today (Africa/Casablanca): orders, delivered rate, COD collected, in transit")
+    @GetMapping("/stats")
+    public OrderStats stats(@AuthenticationPrincipal Jwt jwt) {
+        return orders.stats(AuthenticatedUser.from(jwt));
     }
 
     @Operation(summary = "Cancel an order that has not left the warehouse")

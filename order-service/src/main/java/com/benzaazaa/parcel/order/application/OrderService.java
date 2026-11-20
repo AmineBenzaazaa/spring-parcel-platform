@@ -5,6 +5,7 @@ import com.benzaazaa.parcel.events.order.OrderCancelledV1;
 import com.benzaazaa.parcel.events.order.OrderCreatedV1;
 import com.benzaazaa.parcel.order.domain.Order;
 import com.benzaazaa.parcel.order.domain.OrderRepository;
+import com.benzaazaa.parcel.order.domain.OrderStatus;
 import com.benzaazaa.parcel.support.messaging.OutboxWriter;
 import com.benzaazaa.parcel.support.security.AuthenticatedUser;
 import com.benzaazaa.parcel.support.web.NotFoundException;
@@ -17,7 +18,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.Clock;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,6 +30,8 @@ import java.util.UUID;
 public class OrderService {
 
     public static final String AGGREGATE = "Order";
+    /** "Today" for KPIs is a Moroccan business day, whatever the server's time zone. */
+    public static final ZoneId BUSINESS_ZONE = ZoneId.of("Africa/Casablanca");
     private static final Logger log = LoggerFactory.getLogger(OrderService.class);
 
     private final OrderRepository orders;
@@ -81,9 +88,25 @@ public class OrderService {
         return getVisible(orderId, user);
     }
 
+    /** Newest first; an empty status filter means every status. Merchants only see their own orders. */
     @Transactional(readOnly = true)
-    public Page<Order> list(AuthenticatedUser user, Pageable pageable) {
-        return user.isOps() ? orders.findAll(pageable) : orders.findByMerchantId(user.merchantId(), pageable);
+    public Page<Order> list(AuthenticatedUser user, Collection<OrderStatus> statuses, Pageable pageable) {
+        boolean filtered = statuses != null && !statuses.isEmpty();
+        if (user.isOps()) {
+            return filtered ? orders.findByStatusIn(statuses, pageable) : orders.findAll(pageable);
+        }
+        return filtered ? orders.findByMerchantIdAndStatusIn(user.merchantId(), statuses, pageable)
+                : orders.findByMerchantId(user.merchantId(), pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public OrderStats stats(AuthenticatedUser user) {
+        var since = LocalDate.now(clock.withZone(BUSINESS_ZONE)).atStartOfDay(BUSINESS_ZONE).toInstant();
+        var rows = orders.statusStats(since, user.isOps() ? "" : user.merchantId()).stream()
+                .map(r -> new OrderStats.StatusRow(OrderStatus.valueOf((String) r[0]), ((Number) r[1]).longValue(),
+                        ((Number) r[2]).longValue(), ((Number) r[3]).longValue(), new BigDecimal(r[4].toString())))
+                .toList();
+        return OrderStats.from(since, rows);
     }
 
     /** A merchant asking for another merchant's order gets 404, not 403: we do not confirm it exists. */

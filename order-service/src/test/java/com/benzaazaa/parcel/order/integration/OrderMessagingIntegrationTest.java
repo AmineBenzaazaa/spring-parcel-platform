@@ -187,4 +187,23 @@ class OrderMessagingIntegrationTest {
                 && EventTypes.ORDER_CANCELLED.equals(header(r, EventHeaders.EVENT_TYPE)));
         assertThat(cancelled).isPresent();
     }
+
+    @Test
+    void statsAndStatusFilterRunAgainstRealPostgres() {
+        var ops = new com.benzaazaa.parcel.support.security.AuthenticatedUser("ops", java.util.Set.of("OPS"), null, null);
+        var otherMerchant = new com.benzaazaa.parcel.support.security.AuthenticatedUser("m2", java.util.Set.of("MERCHANT"),
+                "M-9999", null);
+        long createdBefore = orderService.stats(ops).byStatus().get(OrderStatus.CREATED);
+        Order order = createOrder();
+
+        var stats = orderService.stats(ops);
+        var page = orderService.list(ops, List.of(OrderStatus.CREATED),
+                org.springframework.data.domain.PageRequest.of(0, 100));
+
+        assertThat(stats.byStatus().get(OrderStatus.CREATED)).isEqualTo(createdBefore + 1);
+        assertThat(stats.ordersToday()).isPositive();
+        assertThat(page.getContent()).extracting(Order::getId).contains(order.getId());
+        assertThat(page.getContent()).allMatch(o -> o.getStatus() == OrderStatus.CREATED);
+        assertThat(orderService.stats(otherMerchant).ordersToday()).isZero();
+    }
 }
