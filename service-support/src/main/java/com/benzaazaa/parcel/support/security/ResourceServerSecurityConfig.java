@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.List;
@@ -31,5 +32,12 @@ public class ResourceServerSecurityConfig {
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(o -> o.jwt(jwt -> jwt.jwtAuthenticationConverter(new JwtRolesConverter())))
                 .build();
+    }
+
+    /** Picked up by oauth2ResourceServer(); see {@link PathScopedBearerTokenResolver}. */
+    @Bean
+    BearerTokenResolver bearerTokenResolver(
+            @Value("${parcel.security.query-token-paths:}") List<String> queryTokenPaths) {
+        return new PathScopedBearerTokenResolver(queryTokenPaths.stream().filter(p -> !p.isBlank()).toList());
     }
 }
