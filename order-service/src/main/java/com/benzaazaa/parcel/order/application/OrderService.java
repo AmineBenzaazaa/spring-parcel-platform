@@ -37,7 +37,7 @@ public class OrderService {
         this.orders = orders;
         this.outbox = outbox;
         this.clock = clock;
-        this.created = Counter.builder("parcel.orders.created").register(meters);
+        this.created = Counter.builder("parcel.orders.placed").register(meters);
         this.cancelled = Counter.builder("parcel.orders.cancelled").register(meters);
     }
 
