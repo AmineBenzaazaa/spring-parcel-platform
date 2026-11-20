@@ -1,0 +1,199 @@
+# Full local stack. Start:  docker compose up -d --build     Stop:  docker compose down -v
+# Tracing UI (Jaeger) + Grafana:  docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d
+name: parcel-platform
+
+x-java-service: &java-service
+  restart: unless-stopped
+  mem_limit: 360m
+  environment: &java-env
+    JAVA_TOOL_OPTIONS: >-
+      -XX:MaxRAMPercentage=55 -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -Xss256k
+      -XX:ReservedCodeCacheSize=48m -XX:MaxMetaspaceSize=160m -XX:+ExitOnOutOfMemoryError
+    DB_HOST: postgres
+    DB_PORT: 5432
+    DB_USER: parcel
+    DB_PASSWORD: parcel
+    KAFKA_BOOTSTRAP: kafka:9092
+    AUTH_JWKS_URI: http://auth-service:8081/.well-known/jwks.json
+    AUTH_ISSUER: http://auth-service:8081
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    mem_limit: 256m
+    environment:
+      POSTGRES_USER: parcel
+      POSTGRES_PASSWORD: parcel
+      POSTGRES_DB: parcel
+    volumes:
+      - ./infra/postgres/init-databases.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "15432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U parcel -d parcel"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  kafka:
+    image: apache/kafka:3.8.0
+    restart: unless-stopped
+    mem_limit: 900m
+    environment:
+      # KRaft mode: the broker is its own controller, no ZooKeeper
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_HEAP_OPTS: "-Xms256m -Xmx256m -XX:MaxDirectMemorySize=128m -XX:MaxMetaspaceSize=96m"
+      KAFKA_LOG_SEGMENT_BYTES: 16777216
+      CLUSTER_ID: "pArCeLpLaTfOrM0000001A"
+    ports:
+      - "9094:9094"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 > /dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+      start_period: 15s
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    mem_limit: 64m
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  auth-service:
+    <<: *java-service
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    image: parcel-platform/auth-service:local
+    environment:
+      <<: *java-env
+      DB_NAME: authdb
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck: &health
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8081/actuator/health/readiness | grep -q UP"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  order-service:
+    <<: *java-service
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+    image: parcel-platform/order-service:local
+    environment:
+      <<: *java-env
+      DB_NAME: orderdb
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      <<: *health
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8082/actuator/health/readiness | grep -q UP"]
+
+  dispatch-service:
+    <<: *java-service
+    build:
+      context: .
+      dockerfile: dispatch-service/Dockerfile
+    image: parcel-platform/dispatch-service:local
+    environment:
+      <<: *java-env
+      DB_NAME: dispatchdb
+    ports:
+      - "8083:8083"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      <<: *health
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8083/actuator/health/readiness | grep -q UP"]
+
+  notification-service:
+    <<: *java-service
+    build:
+      context: .
+      dockerfile: notification-service/Dockerfile
+    image: parcel-platform/notification-service:local
+    environment:
+      <<: *java-env
+      DB_NAME: notificationdb
+      NOTIFICATION_SMS_ENABLED: "true"
+      # the fake provider runs inside notification-service itself (see FakeSmsProviderController)
+      NOTIFICATION_SMS_BASE_URL: http://localhost:8084/fake-sms
+    ports:
+      - "8084:8084"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      <<: *health
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8084/actuator/health/readiness | grep -q UP"]
+
+  gateway:
+    <<: *java-service
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    image: parcel-platform/gateway:local
+    environment:
+      <<: *java-env
+      REDIS_HOST: redis
+      AUTH_URI: http://auth-service:8081
+      ORDER_URI: http://order-service:8082
+      DISPATCH_URI: http://dispatch-service:8083
+      NOTIFICATION_URI: http://notification-service:8084
+    ports:
+      - "8080:8080"
+    depends_on:
+      redis:
+        condition: service_healthy
+      auth-service:
+        condition: service_healthy
+    healthcheck:
+      <<: *health
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep -q UP"]
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    mem_limit: 160m
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+
+volumes:
+  pgdata:

@@ -1,0 +1,37 @@
+# Optional overlay: Jaeger (OTLP traces) + Grafana.
+#   docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d
+# Without this overlay, trace/span ids are still created, logged and propagated (HTTP + Kafka
+# headers); they are just not exported anywhere.
+x-otlp: &otlp
+  MANAGEMENT_OTLP_TRACING_ENDPOINT: http://jaeger:4318/v1/traces
+
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    mem_limit: 256m
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686"
+
+  grafana:
+    image: grafana/grafana:11.2.2
+    mem_limit: 192m
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+    volumes:
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+    ports:
+      - "3001:3000"
+
+  gateway:
+    environment: *otlp
+  auth-service:
+    environment: *otlp
+  order-service:
+    environment: *otlp
+  dispatch-service:
+    environment: *otlp
+  notification-service:
+    environment: *otlp
