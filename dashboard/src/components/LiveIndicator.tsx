@@ -16,7 +16,7 @@ export function LiveIndicator({ status }: { status: LiveStatus }) {
         {status === 'connected' && <span className={clsx('absolute inset-0 rounded-full animate-pulse-ring', color)} />}
         <span className={clsx('relative h-2 w-2 rounded-full', color)} />
       </span>
-      {t(`live.${status}`)}
+      <span className="hidden sm:inline">{t(`live.${status}`)}</span>
     </span>
   );
 }

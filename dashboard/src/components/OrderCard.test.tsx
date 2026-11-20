@@ -21,7 +21,8 @@ describe('OrderCard', () => {
     expect(screen.getByText('Casablanca')).toBeInTheDocument();
     expect(screen.getByText('1,249.50 MAD')).toBeInTheDocument();
     expect(screen.getByText('Youssef El Amrani')).toBeInTheDocument();
-    expect(screen.getByText('Attempt 2/3')).toBeInTheDocument();
+    expect(screen.getByText('Attempt 2/3')).toBeInTheDocument(); // screen-reader label
+    expect(screen.getByText('2/3')).toBeInTheDocument();
 
     await userEvent.click(screen.getByTestId('order-card'));
     expect(onOpen).toHaveBeenCalledWith('o1');

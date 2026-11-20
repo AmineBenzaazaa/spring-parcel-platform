@@ -16,15 +16,15 @@ export function TopBar({ live, sim, onCreate }: { live: LiveStatus; sim: ReturnT
 
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-bg/80 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-[1680px] items-center gap-3 px-4">
+      <div className="mx-auto flex h-14 max-w-[1680px] items-center gap-2 px-4 sm:gap-3">
         <div className="flex items-center gap-2.5">
           <Logo />
-          <span className="text-[14px] font-semibold tracking-tight">{t('app.name')}</span>
-          <span className="hidden text-[13px] text-faint sm:inline">/</span>
-          <span className="hidden text-[13px] text-muted sm:inline">{t('app.tagline')}</span>
+          <span className="hidden whitespace-nowrap text-[14px] font-semibold tracking-tight sm:inline">{t('app.name')}</span>
+          <span className="hidden text-[13px] text-faint lg:inline">/</span>
+          <span className="hidden whitespace-nowrap text-[13px] text-muted lg:inline">{t('app.tagline')}</span>
         </div>
         <LiveIndicator status={live} />
-        <div className="ml-auto flex items-center gap-1.5">
+        <div className="ml-auto flex items-center gap-1 sm:gap-1.5">
           <SimulateMenu sim={sim} />
           <Button size="sm" variant="primary" onClick={onCreate} data-testid="open-create-order">
             <PackagePlus className="h-3.5 w-3.5" />

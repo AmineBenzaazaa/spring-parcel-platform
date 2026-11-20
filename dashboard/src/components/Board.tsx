@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { AnimatePresence, LayoutGroup } from 'framer-motion';
+import { LayoutGroup } from 'framer-motion';
 import { Inbox, PackagePlus } from 'lucide-react';
 import { useI18n, type MessageKey } from '@/lib/i18n';
 import { COLUMNS, statusStyle, type Column } from '@/lib/status';
@@ -58,23 +58,24 @@ export function Board({ onOpen, onCreate }: { onOpen: (orderId: string) => void;
         />
       ) : (
         <LayoutGroup>
-          <div className="scrollbar-thin grid min-h-0 flex-1 auto-cols-[minmax(232px,1fr)] grid-flow-col gap-3 overflow-x-auto p-3">
+          <div className="scrollbar-thin grid min-h-0 flex-1 auto-cols-[minmax(176px,1fr)] grid-flow-col gap-3 overflow-x-auto p-3">
             {COLUMNS.map((column) => {
               const list = columns.get(column) ?? [];
               const cod = list.reduce((sum, o) => sum + o.codAmount, 0);
               return (
                 <div key={column} data-testid={`column-${column}`} className="flex min-h-[320px] min-w-0 flex-col rounded-lg bg-subtle/60 p-2">
                   <div className="mb-2 flex items-center justify-between px-1.5 pt-0.5">
-                    <span className="inline-flex items-center gap-2 text-[12px] font-medium text-fg">
+                    <span className="inline-flex min-w-0 items-center gap-2 whitespace-nowrap text-[12px] font-medium text-fg">
                       <StatusDot status={column} />
                       {t(`status.${column}` as MessageKey)}
                       <span className="rounded bg-panel px-1.5 text-[11px] tabular-nums text-muted ring-1 ring-line">{list.length}</span>
                     </span>
-                    {list.length > 0 && <span className="text-[11px] tabular-nums text-faint">{formatMad(cod, lang, true)}</span>}
+                    {list.length > 0 && <span className="hidden whitespace-nowrap pl-1 text-[11px] tabular-nums text-faint min-[1700px]:inline">{formatMad(cod, lang, true)}</span>}
                   </div>
                   <div className="scrollbar-thin flex max-h-[calc(100vh-380px)] min-h-[120px] flex-col gap-2 overflow-y-auto pb-1">
-                    <AnimatePresence initial={false} mode="popLayout">
-                      {list.map((o) => {
+                    {/* no AnimatePresence here: an exit animation would leave a ghost card behind; the
+                        shared layoutId alone animates the card from its old column to the new one */}
+                    {list.map((o) => {
                         const d = byOrder.get(o.id);
                         return (
                           <OrderCard
@@ -87,7 +88,6 @@ export function Board({ onOpen, onCreate }: { onOpen: (orderId: string) => void;
                           />
                         );
                       })}
-                    </AnimatePresence>
                     {list.length === 0 && (
                       <div className={`flex flex-1 items-center justify-center rounded-md border border-dashed border-line px-3 py-6 text-center text-[12px] ${statusStyle(column).text} opacity-60`}>
                         {column === 'CREATED' ? t('board.emptyCreated') : t('board.empty')}

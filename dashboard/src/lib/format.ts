@@ -24,7 +24,7 @@ export function formatTime(iso: string, lang: Lang = 'en', withMillis = false): 
 
 export function relativeTime(iso: string, lang: Lang = 'en', now = Date.now()): string {
   const diff = Math.round((new Date(iso).getTime() - now) / 1000);
-  const rtf = new Intl.RelativeTimeFormat(locales[lang], { numeric: 'auto', style: 'narrow' });
+  const rtf = new Intl.RelativeTimeFormat(locales[lang], { numeric: 'auto', style: 'short' });
   const abs = Math.abs(diff);
   if (abs < 45) return rtf.format(Math.round(diff), 'second');
   if (abs < 2700) return rtf.format(Math.round(diff / 60), 'minute');
