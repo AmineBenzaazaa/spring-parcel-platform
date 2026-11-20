@@ -139,4 +139,45 @@ class DispatchServiceTest {
         assertThat(captor.getAllValues()).extracting(DeliveryStatusChangedV1::newStatus)
                 .containsExactly(DeliveryStatusV1.FAILED, DeliveryStatusV1.RETURNED);
     }
+
+    private static DeliveryRepository.CourierLoad load(UUID courierId, long n) {
+        return new DeliveryRepository.CourierLoad() {
+            public UUID getCourierId() {
+                return courierId;
+            }
+
+            public long getLoad() {
+                return n;
+            }
+        };
+    }
+
+    @Test
+    void courierBoardCombinesActiveLoadAndParcelsOnTheRoad() {
+        var hamza = new Courier(UUID.randomUUID(), "Hamza", "+212661000002", "CASA", true);
+        var omar = new Courier(UUID.randomUUID(), "Omar", "+212661000006", "KENITRA", false);
+        when(couriers.findAll()).thenReturn(List.of(YOUSSEF, hamza, omar));
+        when(deliveries.countLoad(any(), eq(DeliveryStatus.active())))
+                .thenReturn(List.of(load(YOUSSEF.getId(), 1), load(hamza.getId(), 3)));
+        when(deliveries.countLoad(any(), eq(java.util.EnumSet.of(DeliveryStatus.OUT_FOR_DELIVERY))))
+                .thenReturn(List.of(load(hamza.getId(), 2)));
+
+        List<CourierView> board = service.couriers();
+
+        assertThat(board).extracting(CourierView::name).containsExactly("Hamza", "Youssef", "Omar");
+        assertThat(board).extracting(CourierView::availability).containsExactly(CourierView.Availability.ON_ROUTE,
+                CourierView.Availability.AT_HUB, CourierView.Availability.OFFLINE);
+        assertThat(board.get(0).outForDelivery()).isEqualTo(2);
+    }
+
+    @Test
+    void courierListAlwaysScopesToTheirOwnActiveDeliveries() {
+        UUID me = UUID.randomUUID();
+        var courier = new AuthenticatedUser("courier.casa1", Set.of("COURIER"), null, me);
+
+        service.list(courier, List.of(DeliveryStatus.DELIVERED), 200);
+
+        verify(deliveries).findByCourierIdAndStatusInOrderByUpdatedAtDesc(me, DeliveryStatus.active());
+        verify(deliveries, never()).findByStatusInOrderByUpdatedAtDesc(any(), any());
+    }
 }

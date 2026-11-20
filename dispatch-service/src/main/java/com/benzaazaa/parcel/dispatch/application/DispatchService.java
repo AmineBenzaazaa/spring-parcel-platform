@@ -20,11 +20,15 @@ import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -150,15 +154,41 @@ public class DispatchService {
 
     @Transactional(readOnly = true)
     public List<Delivery> list(AuthenticatedUser user) {
-        if (user.isOps()) {
-            return deliveries.findTop50ByOrderByUpdatedAtDesc();
-        }
-        return deliveries.findByCourierIdAndStatusInOrderByUpdatedAtDesc(user.courierId(), DeliveryStatus.active());
+        return list(user, List.of(), 50);
     }
 
+    /** Ops: latest deliveries (optionally by status). Couriers: always their own active deliveries. */
     @Transactional(readOnly = true)
-    public List<Courier> couriers() {
-        return couriers.findAll();
+    public List<Delivery> list(AuthenticatedUser user, Collection<DeliveryStatus> statuses, int limit) {
+        if (!user.isOps()) {
+            return deliveries.findByCourierIdAndStatusInOrderByUpdatedAtDesc(user.courierId(), DeliveryStatus.active());
+        }
+        var page = PageRequest.of(0, Math.min(Math.max(limit, 1), 200));
+        return statuses == null || statuses.isEmpty()
+                ? deliveries.findAllByOrderByUpdatedAtDesc(page)
+                : deliveries.findByStatusInOrderByUpdatedAtDesc(statuses, page);
+    }
+
+    /** Every courier with their current load, busiest first within each zone. Two grouped queries, no N+1. */
+    @Transactional(readOnly = true)
+    public List<CourierView> couriers() {
+        List<Courier> all = couriers.findAll();
+        if (all.isEmpty()) {
+            return List.of();
+        }
+        List<UUID> ids = all.stream().map(Courier::getId).toList();
+        Map<UUID, Long> active = toMap(deliveries.countLoad(ids, DeliveryStatus.active()));
+        Map<UUID, Long> onRoad = toMap(deliveries.countLoad(ids, EnumSet.of(DeliveryStatus.OUT_FOR_DELIVERY)));
+        return all.stream()
+                .map(c -> CourierView.of(c, active.getOrDefault(c.getId(), 0L), onRoad.getOrDefault(c.getId(), 0L)))
+                .sorted(Comparator.comparing(CourierView::zone).thenComparing(CourierView::activeLoad,
+                        Comparator.reverseOrder()).thenComparing(CourierView::name))
+                .toList();
+    }
+
+    private static Map<UUID, Long> toMap(List<DeliveryRepository.CourierLoad> rows) {
+        return rows.stream().collect(Collectors.toMap(DeliveryRepository.CourierLoad::getCourierId,
+                DeliveryRepository.CourierLoad::getLoad));
     }
 
     // ---------------------------------------------------------------- helpers

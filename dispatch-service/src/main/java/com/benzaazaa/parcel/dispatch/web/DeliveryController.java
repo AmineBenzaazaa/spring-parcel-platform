@@ -1,7 +1,7 @@
 package com.benzaazaa.parcel.dispatch.web;
 
+import com.benzaazaa.parcel.dispatch.application.CourierView;
 import com.benzaazaa.parcel.dispatch.application.DispatchService;
-import com.benzaazaa.parcel.dispatch.domain.Courier;
 import com.benzaazaa.parcel.dispatch.domain.Delivery;
 import com.benzaazaa.parcel.dispatch.domain.DeliveryStatus;
 import com.benzaazaa.parcel.support.security.AuthenticatedUser;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
@@ -34,10 +35,13 @@ public class DeliveryController {
         this.dispatch = dispatch;
     }
 
-    @Operation(summary = "Courier: my active deliveries. Ops: latest 50 deliveries")
+    @Operation(summary = "Courier: my active deliveries. Ops: latest deliveries (limit up to 200, optional ?status= filter)")
     @GetMapping("/api/deliveries")
-    public List<DeliveryResponse> list(@AuthenticationPrincipal Jwt jwt) {
-        return dispatch.list(AuthenticatedUser.from(jwt)).stream().map(DeliveryResponse::from).toList();
+    public List<DeliveryResponse> list(@AuthenticationPrincipal Jwt jwt,
+            @RequestParam(name = "status", required = false) List<DeliveryStatus> statuses,
+            @RequestParam(defaultValue = "50") int limit) {
+        return dispatch.list(AuthenticatedUser.from(jwt), statuses, limit).stream().map(DeliveryResponse::from)
+                .toList();
     }
 
     @GetMapping("/api/deliveries/{orderId}")
@@ -71,9 +75,10 @@ public class DeliveryController {
         return DeliveryResponse.from(dispatch.assign(orderId, request.courierId()));
     }
 
+    @Operation(summary = "Ops: couriers with zone, active load and availability")
     @PreAuthorize("hasRole('OPS')")
     @GetMapping("/api/couriers")
-    public List<Courier> couriers() {
+    public List<CourierView> couriers() {
         return dispatch.couriers();
     }
 
