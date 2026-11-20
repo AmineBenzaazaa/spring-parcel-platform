@@ -362,3 +362,63 @@ tests run in GitHub Actions, where Docker is available.
 Schema Registry + Avro, Debezium for the outbox, Keycloak, Kubernetes with KEDA scaling on consumer
 lag, contract tests, a settlement service that reconciles collected cash with `DELIVERED` events,
 and alerts on `parcel_outbox_pending`, DLT growth and the circuit breaker state.
+
+---
+
+## 7. The live dashboard: how the UI gets events
+
+```mermaid
+flowchart LR
+    K{{Kafka<br/>orders + delivery-status}} -- "group notification-live-{uuid}<br/>(one per instance)" --> L[ActivityStreamListener]
+    L --> DB[(activity_event<br/>PK = eventId)]
+    L --> HUB[LiveEventHub<br/>SseEmitter list]
+    NS[NotificationService] -- "@TransactionalEventListener<br/>after commit" --> HUB
+    CB[CircuitBreaker<br/>state transitions] --> HUB
+    HUB -- "text/event-stream" --> GW[gateway] --> NG[nginx] --> UI[EventSource<br/>TanStack Query cache]
+```
+
+**Why Server-Sent Events, not WebSocket or polling?**
+
+| | SSE | WebSocket | Polling |
+|---|---|---|---|
+| Direction | server → browser, which is all a dashboard needs | both ways | browser asks |
+| Protocol | plain HTTP: gateway, nginx, auth and proxies just work | upgrade handshake; Spring Cloud Gateway and nginx need extra config | plain HTTP |
+| Reconnect | built into EventSource (I handle it myself to refresh the token) | write it yourself | n/a |
+| Server cost | async servlet response: a socket, no thread | a socket | a request every N seconds per user, mostly empty |
+| Latency | ~instant | ~instant | up to N seconds |
+| Weak points | no custom headers; ~6 connections per domain on HTTP/1.1 | more moving parts | wasteful, laggy |
+
+Commands (create order, courier steps) stay **normal REST calls**, so the only push channel needed is
+server → browser. That is SSE's sweet spot. Polling is still there as a 30-second safety net.
+
+**Questions they may ask**
+
+* *"EventSource can't send headers. How do you authenticate?"* With a 60-second stream token in the query
+  string. The browser swaps its session token for it (`POST /api/auth/stream-token`). The token is marked
+  `token_use=stream`, the stream endpoint refuses everything else, and only that path accepts query tokens
+  (`PathScopedBearerTokenResolver` in the services, a custom `ServerAuthenticationConverter` in the
+  gateway). nginx does not log that URL. The alternative is an HttpOnly cookie: tokens stay out of URLs,
+  but you take on CSRF and cookie scope in an otherwise stateless API.
+* *"Why a consumer group per instance?"* Groups split partitions among their members. With two replicas
+  in one group, each would see only half of the events, while each browser is connected to one replica.
+  A unique group per instance (`notification-live-${random.uuid}`, `auto.offset.reset=latest`) turns Kafka
+  into a broadcast. History for the timeline comes from Postgres, not from replaying the topic.
+* *"What if the browser misses events while disconnected?"* On every reconnect the server sends `hello`
+  and the client refetches its queries, so the cache is rebuilt from the source of truth. Next step:
+  `Last-Event-ID` and a replay from `activity_event`.
+* *"Duplicates and ordering?"* At-least-once again. `INSERT … ON CONFLICT (event_id) DO NOTHING` means only
+  the first copy is pushed. The client ignores a `DeliveryStatusChanged` whose `sequence` is not newer
+  than the last one applied, the same rule as `Order.applyDeliveryStatus`.
+* *"Does an open SSE connection hold a Tomcat thread?"* No. `SseEmitter` uses async servlet processing:
+  the request thread goes back to the pool. A 15-second comment heartbeat keeps proxies from closing idle
+  connections and detects dead clients. Spring Security permits the ASYNC re-dispatch, because the request
+  was already authorised when the stream started.
+* *"Why put it in notification-service?"* It already consumes the status topic and owns notifications
+  and the circuit breaker, and one more JVM costs ~300 MB on a laptop. In production I would move it to a
+  small ops-BFF service.
+
+**Front-end side (`dashboard/src/lib/live.ts`):** `useLiveStream` patches the TanStack Query cache
+directly (`setQueryData`), so a card moves the instant the event lands. framer-motion's `layoutId`
+animates it from its old column to the new one. KPIs and courier load are refetched with a 350 ms
+debounce, because a failed last attempt emits `FAILED` and `RETURNED` back to back.
+

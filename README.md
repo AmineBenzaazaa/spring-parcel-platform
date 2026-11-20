@@ -11,6 +11,12 @@ return the parcel to the merchant. Customers get an SMS at each step.
 > Companion docs: [docs/INTERVIEW-GUIDE.md](docs/INTERVIEW-GUIDE.md) has diagrams, a NestJS-to-Spring
 > mapping, a file-by-file trace of one order, and 30 interview questions answered with this code.
 
+![Parcel Ops dashboard: live board, KPIs, couriers and notifications](docs/img/dashboard.png)
+
+> The **ops dashboard** (React + TypeScript, `dashboard/`) shows orders moving across the board as
+> Kafka events arrive. Run it with `docker compose up -d --build` and open http://localhost:3100.
+> See [Dashboard](#dashboard).
+
 ---
 
 ## The problem
@@ -161,7 +167,7 @@ Maven wrapper.
 # build + all tests (unit + Testcontainers: Postgres, Kafka KRaft, Redis)
 ./mvnw verify
 
-# full stack: Kafka (KRaft), Postgres, Redis, 5 services, Prometheus
+# full stack: Kafka (KRaft), Postgres, Redis, 5 services, the dashboard, Prometheus
 docker compose up -d --build
 docker compose ps            # wait until the services are "healthy" (about 1 minute)
 
@@ -174,7 +180,8 @@ docker compose down -v
 
 | URL | What |
 |---|---|
-| http://localhost:8080 | gateway (use this for everything) |
+| http://localhost:3100 | **ops dashboard** (`ops` / `Passw0rd!`); set `DASHBOARD_PORT` to change the port |
+| http://localhost:8080 | gateway (use this for every API call) |
 | http://localhost:8082/swagger-ui.html | order-service OpenAPI (also 8081, 8083, 8084) |
 | http://localhost:9090 | Prometheus (try `parcel_outbox_pending`, `parcel_orders_placed_total`, `resilience4j_circuitbreaker_state`) |
 | localhost:9094 | Kafka for host tools |
@@ -185,6 +192,92 @@ Memory: each JVM runs with `-XX:MaxRAMPercentage=55 -XX:+UseSerialGC -XX:TieredS
 
 Demo users (password `Passw0rd!`): `ops`, `merchant.atlas` (M-1001), `merchant.souk` (M-1002),
 `courier.casa1`, `courier.casa2`, `courier.rabat1`.
+
+## Dashboard
+
+`dashboard/` is a live ops console: **Vite, React 18, TypeScript, Tailwind, TanStack Query, framer-motion,
+Radix**, served by nginx in the compose stack. It talks only to the gateway, through the same origin.
+
+```bash
+docker compose up -d --build          # the dashboard is part of the stack
+./scripts/seed-dashboard.sh           # optional: 9 orders spread across every column
+open http://localhost:3100            # ops / Passw0rd!
+```
+
+**The 30-second demo:** sign in as `ops`, click **Simulate → New order, delivered**. The card appears in
+*Created*, jumps to *Assigned* about a second later (outbox → Kafka → dispatch), then moves to *Out for
+delivery* and *Delivered*. KPIs, courier load and the SMS feed update with it. **Simulate → New order,
+failed 3 times** shows the saga: three failed attempts, then *Returned*. Click any card to see its timeline:
+every Kafka event and notification, with timestamps to the millisecond and the correlation id. The ⚡
+button in the notifications panel breaks the fake SMS provider, so the next few deliveries open the
+circuit breaker (the pill turns red, SMS become `SKIPPED`, the log channel keeps working).
+
+| Area | What it shows | Backed by |
+|---|---|---|
+| KPI tiles | orders today, delivered %, COD collected (MAD), in transit, failed/returned | `GET /api/orders/stats` (one grouped SQL query, Africa/Casablanca day) |
+| Live board | one column per status; cards animate between columns | `GET /api/orders?size=100`, `GET /api/deliveries?limit=200` + SSE `delivery` / `order` events |
+| Order drawer | recipient, COD, courier, attempts, courier actions, event timeline with correlation ids | `GET /api/activity/orders/{id}`, `GET /api/notifications?orderId=`, `POST /api/deliveries/{id}/…` |
+| Couriers | zone, active load, availability (on route / at hub / idle / offline) | `GET /api/couriers` (load from two grouped queries) |
+| Notifications | SMS + LOG, SENT / FAILED / SKIPPED, circuit breaker state | `GET /api/notifications`, `GET /api/notifications/circuit-breaker` + SSE `notification` / `circuit` |
+| Health strip | each service's actuator health and the Kafka connection | `GET /api/system/health` (gateway fans out in parallel, 2 s timeout) |
+| Create order | Moroccan cities with a courier zone, phone as `06 12 34 56 78` or `+212…`, MAD amount | `POST /api/orders` with `Idempotency-Key` and a `ui-…` correlation id |
+
+Also: light and dark mode, **English / French** toggle, skeleton loading and empty states, and a layout
+that works from phone width up.
+
+### How live updates work
+
+```mermaid
+sequenceDiagram
+    participant UI as Browser (EventSource)
+    participant NG as nginx :3100
+    participant GW as gateway
+    participant A as auth-service
+    participant N as notification-service
+    participant K as Kafka
+
+    UI->>GW: POST /api/auth/stream-token (Bearer session token)
+    A-->>UI: 60-second token, token_use=stream
+    UI->>NG: GET /api/activity/stream?access_token=…
+    NG->>GW: proxy, buffering off
+    GW->>N: JWT checked (query token allowed on this path only)
+    N-->>UI: event: hello (circuit state)
+    K->>N: parcel.orders.v1 + parcel.delivery-status.v1<br/>group notification-live-{uuid}
+    N->>N: INSERT activity_event ON CONFLICT DO NOTHING
+    N-->>UI: event: order / delivery / notification / circuit
+    UI->>UI: patch the TanStack Query cache, card moves
+```
+
+* **One SSE endpoint**, in notification-service, which already consumes the status topic and owns
+  notifications and the circuit breaker. A new listener reads both topics with **its own consumer group,
+  unique per instance**, so every replica sees every event (each browser is connected to one replica).
+  It never touches the business consumer's offsets.
+* Events are **stored once** (`activity_event`, primary key = eventId) for the order timeline, and only a
+  first insert is pushed, so a redelivered event never moves a card twice. The UI also applies the same
+  stale-sequence rule as order-service.
+* Notifications are pushed by a `@TransactionalEventListener`, so only after their transaction commits.
+* **Auth trade-off:** `EventSource` cannot send an `Authorization` header. The options were: a token in the
+  query string, a cookie, or `fetch()` streaming with headers. I chose a query parameter, with limits:
+  the token lives 60 seconds and is marked `token_use=stream`; the stream endpoint accepts nothing else;
+  the gateway and the service accept query tokens **only on that path**; nginx turns off the access log
+  for it. A cookie would keep tokens out of URLs, but it brings CSRF and cookie-domain setup to a
+  stateless bearer-token API. Once the 60 seconds are up, a reconnect simply fetches a new token.
+* **Reconnects:** on error the hook closes the EventSource, backs off (1 s, 2 s, 4 s … 10 s), fetches a
+  new token and reconnects. Each `hello` refetches the queries, which fills any gap. Polling every 30 s
+  stays as a safety net.
+
+### Dashboard tests
+
+```bash
+cd dashboard
+npm ci && npm test          # Vitest: cache updates, live hook with a fake EventSource, cards, KPIs, form
+npx playwright install chromium
+npm run e2e                 # Playwright against the running stack: login, create, simulate, DELIVERED
+```
+
+| Screens | |
+|---|---|
+| ![Order timeline with correlation ids](docs/img/dashboard-timeline.png) | ![Dark mode, French](docs/img/dashboard-dark-fr.png) |
 
 ## curl walkthrough
 
@@ -346,7 +439,8 @@ live in the services.
 
 ## Tests
 
-`./mvnw verify` runs **138 tests**. Docker is needed for the integration tests.
+`./mvnw verify` runs **164 Java tests**. Docker is needed for the integration tests. The dashboard adds
+25 Vitest tests and a Playwright end-to-end test (see [Dashboard tests](#dashboard-tests)).
 
 | Kind | Examples |
 |---|---|
@@ -355,7 +449,8 @@ live in the services.
 | Web slice tests (`@WebMvcTest` + `jwt()`) | 401, 403, 400 with field errors and correlation id, 409 business rule, 201 + Location |
 | Testcontainers (Postgres + Kafka KRaft) | outbox to Kafka with key and headers; same event twice has one effect; poison message to DLT without retries; transient failure recovered via the retry topic; correlation id survives Kafka to service to outbox to Kafka |
 | Resilience | retry on 503, no retry on 4xx, TimeLimiter cut-off, circuit opens and short-circuits (stub HTTP server); provider outage opens the breaker in the full Spring context while the log channel keeps sending |
-| Gateway (Testcontainers Redis) | 401 without token, wrong issuer or foreign key rejected, routing with headers, 429 above the token bucket |
+| Gateway (Testcontainers Redis) | 401 without token, wrong issuer or foreign key rejected, routing with headers, 429 above the token bucket, query token only on the stream path, health fan-out |
+| Live stream | session token refused on the SSE endpoint, stream token accepted; Testcontainers: Kafka event reaches a real HTTP SSE client, stored once, notification pushed after commit |
 
 ## What I would do next
 
@@ -372,3 +467,5 @@ live in the services.
 * Contract tests between producers and consumers (Spring Cloud Contract or Pact), and k6 load tests
   on the gateway.
 * Courier assignment that uses live location and capacity, with a manual override UI for ops.
+* Dashboard: resume the stream with `Last-Event-ID` (replay from `activity_event`) instead of refetching,
+  and a dedicated ops BFF service for the live feed once there are several dashboards.
