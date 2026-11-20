@@ -117,6 +117,8 @@ management:
     health:
       probes:
         enabled: true
+      # makes /actuator/health/kafka addressable (the gateway's health strip reads it); details stay hidden
+      show-components: always
   tracing:
     sampling:
       probability: 1.0

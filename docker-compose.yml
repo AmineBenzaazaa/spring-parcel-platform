@@ -1,4 +1,5 @@
 # Full local stack. Start:  docker compose up -d --build     Stop:  docker compose down -v
+# Ops dashboard: http://localhost:3100 (ops / Passw0rd!)
 # Tracing UI (Jaeger) + Grafana:  docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d
 name: parcel-platform
 
@@ -186,6 +187,19 @@ services:
     healthcheck:
       <<: *health
       test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/readiness | grep -q UP"]
+
+  # React ops console (Vite build served by nginx); /api is proxied to the gateway, same origin
+  dashboard:
+    build:
+      context: ./dashboard
+    image: parcel-platform/dashboard:local
+    restart: unless-stopped
+    mem_limit: 48m
+    ports:
+      - "${DASHBOARD_PORT:-3100}:80"
+    depends_on:
+      gateway:
+        condition: service_started
 
   prometheus:
     image: prom/prometheus:v2.54.1
