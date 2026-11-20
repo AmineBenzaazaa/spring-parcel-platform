@@ -40,7 +40,15 @@ spring:
         - id: notification-service
           uri: ${NOTIFICATION_URI:http://localhost:8084}
           predicates:
-            - Path=/api/notifications/**
+            - Path=/api/notifications/**,/api/activity/**
+        # demo only: lets the dashboard break the fake SMS provider to show the circuit breaker opening
+        - id: demo-sms-provider
+          uri: ${NOTIFICATION_URI:http://localhost:8084}
+          predicates:
+            - Path=/api/demo/sms-provider/{mode}
+            - Method=POST
+          filters:
+            - SetPath=/fake-sms/admin/mode/{mode}
 
 management:
   endpoints:

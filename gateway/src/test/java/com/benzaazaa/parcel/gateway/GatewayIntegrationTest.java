@@ -55,6 +55,8 @@ class GatewayIntegrationTest {
             LAST_CORRELATION.set(ex.getRequestHeaders().getFirst("X-Correlation-Id"));
             respond(ex, "{\"path\":\"" + ex.getRequestURI().getPath() + "\"}");
         });
+        BACKEND.createContext("/actuator/", ex -> respond(ex, "{\"status\":\"UP\"}"));
+        BACKEND.createContext("/fake-sms/", ex -> respond(ex, "{\"path\":\"" + ex.getRequestURI().getPath() + "\"}"));
         BACKEND.start();
     }
 
@@ -142,5 +144,38 @@ class GatewayIntegrationTest {
             }
         }
         assertThat(tooMany).as("burst capacity 3, replenish 1/s").isGreaterThanOrEqualTo(3);
+    }
+
+    @Test
+    void queryParameterTokenIsAcceptedOnlyOnTheStreamPath() {
+        String jwt = token("ops.stream", "http://auth-test", KEY);
+
+        web.get().uri("/api/activity/stream?access_token=" + jwt).exchange()
+                .expectStatus().isOk()
+                .expectBody().jsonPath("$.path").isEqualTo("/api/activity/stream");
+        web.get().uri("/api/orders?access_token=" + jwt).exchange().expectStatus().isUnauthorized();
+    }
+
+    @Test
+    void systemHealthAggregatesEveryServiceAndKafka() {
+        String jwt = token("ops.health", "http://auth-test", KEY);
+
+        web.get().uri("/api/system/health").header("Authorization", "Bearer " + jwt).exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.status").isEqualTo("UP")
+                .jsonPath("$.components.length()").isEqualTo(6)
+                .jsonPath("$.components[0].name").isEqualTo("gateway")
+                .jsonPath("$.components[5].name").isEqualTo("kafka");
+        web.get().uri("/api/system/health").exchange().expectStatus().isUnauthorized();
+    }
+
+    @Test
+    void demoSmsRouteIsRewrittenToTheFakeProviderAdminPath() {
+        String jwt = token("ops.demo", "http://auth-test", KEY);
+
+        web.post().uri("/api/demo/sms-provider/FAIL").header("Authorization", "Bearer " + jwt).exchange()
+                .expectStatus().isOk()
+                .expectBody().jsonPath("$.path").isEqualTo("/fake-sms/admin/mode/FAIL");
     }
 }
