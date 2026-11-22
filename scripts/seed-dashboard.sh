@@ -25,7 +25,7 @@ fail() { step "$1" out-for-delivery; step "$1" failed "{\"reason\":\"$2\"}"; }
 
 echo "creating orders..."
 D1=$(create M-1001 "Salma Idrissi"       +212612345678 "12 Rue Atlas, Maarif"      Casablanca 249.90)
-D2=$(create M-1002 "Youssef Benjelloun"  +212661234567 "45 Av. Mohammed V"         Rabat      489.00)
+D2=$(create M-1002 "Youssef Benjelloun"  +212661234567 "45 Av. Hassan II"          Rabat      489.00)
 R1=$(create M-1001 "Khadija Alaoui"      +212698765432 "8 Rue de Fes, Gueliz"      Marrakech  1250.00)
 F1=$(create M-1002 "Mehdi Tazi"          +212677889900 "21 Bd Zerktouni"           Casablanca 189.50)
 O1=$(create M-1001 "Imane Berrada"       +212655443322 "3 Rue Ibn Battouta"        Tanger     720.00)

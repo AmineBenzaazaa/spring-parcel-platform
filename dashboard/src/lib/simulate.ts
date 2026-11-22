@@ -64,10 +64,10 @@ export const CITIES = ['Casablanca', 'Mohammedia', 'Rabat', 'Salé', 'Témara', 
 
 const FIRST = ['Salma', 'Youssef', 'Fatima Zahra', 'Mehdi', 'Imane', 'Othmane', 'Khadija', 'Anas', 'Hiba', 'Rachid'];
 const LAST = ['Idrissi', 'Benjelloun', 'El Fassi', 'Alaoui', 'Berrada', 'Tazi', 'Chraibi', 'Lahlou', 'Bennani', 'Amrani'];
-const STREETS = ['Rue Atlas, Maarif', 'Bd Zerktouni', 'Av. Mohammed V', 'Rue Ibn Battouta', 'Hay Riad, Secteur 12',
+const STREETS = ['Rue Atlas, Maarif', 'Bd Zerktouni', 'Av. des FAR', 'Rue Ibn Battouta', 'Hay Riad, Secteur 12',
   'Bd Anfa', 'Rue de Fès, Gueliz', 'Av. Hassan II'];
 // Casablanca twice: most COD volume is there, and it has two couriers
-const DEMO_CITIES = ['Casablanca', 'Casablanca', 'Rabat', 'Marrakech', 'Tanger', 'Kénitra', 'Mohammedia'];
+const DEMO_CITIES = ['Casablanca', 'Casablanca', 'Rabat', 'Marrakech', 'Tanger', 'Kénitra', 'Salé'];
 
 const pick = <T,>(xs: T[]) => xs[Math.floor(Math.random() * xs.length)];
 

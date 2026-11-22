@@ -1,26 +1,13 @@
+import { brandTheme } from './src/brand/tailwind.tokens.js';
+
 /** @type {import('tailwindcss').Config} */
-const v = (name) => `rgb(var(--${name}) / <alpha-value>)`;
 
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   darkMode: 'class',
   theme: {
     extend: {
-      fontFamily: {
-        sans: ['"Inter Variable"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        mono: ['"JetBrains Mono Variable"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
-      },
-      colors: {
-        bg: v('bg'),
-        panel: v('panel'),
-        subtle: v('subtle'),
-        line: v('line'),
-        fg: v('fg'),
-        muted: v('muted'),
-        faint: v('faint'),
-        accent: v('accent'),
-        'accent-fg': v('accent-fg'),
-      },
+      ...brandTheme,
       boxShadow: {
         card: '0 1px 2px rgb(0 0 0 / 0.04), 0 1px 1px rgb(0 0 0 / 0.02)',
         lift: '0 8px 24px -6px rgb(0 0 0 / 0.18), 0 2px 6px rgb(0 0 0 / 0.06)',

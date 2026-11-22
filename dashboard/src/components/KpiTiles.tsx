@@ -27,11 +27,11 @@ export function KpiTilesView({ stats }: { stats: OrderStats }) {
     <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
       <Tile testId="kpi-orders" label={t('kpi.ordersToday')} value={formatNumber(stats.ordersToday, lang)}
         hint={new Date(stats.since).toLocaleDateString(lang === 'fr' ? 'fr-MA' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}
-        icon={<Package className="h-3.5 w-3.5" />} tone="bg-zinc-500/10 text-zinc-600 dark:text-zinc-300" />
+        icon={<Package className="h-3.5 w-3.5" />} tone="bg-subtle text-muted" />
       <Tile testId="kpi-delivered" label={t('kpi.deliveredRate')}
         value={stats.deliveredRate == null ? '—' : `${formatNumber(stats.deliveredRate, lang)}%`}
         hint={stats.deliveredRate == null ? t('kpi.noneClosed') : t('kpi.deliveredRateHint', { n: stats.deliveredToday })}
-        icon={<CircleCheck className="h-3.5 w-3.5" />} tone="bg-emerald-500/10 text-emerald-600 dark:text-emerald-300" />
+        icon={<CircleCheck className="h-3.5 w-3.5" />} tone="bg-signal/15 text-signal-ink" />
       <Tile testId="kpi-cod" label={t('kpi.cod')}
         value={<>{formatMad(stats.codCollectedToday, lang).replace(' MAD', '')}<span className="ml-1 text-sm font-medium text-muted">MAD</span></>}
         hint={t('kpi.codHint')}
