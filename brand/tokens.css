@@ -1,0 +1,57 @@
+/*
+ * MSE Transport design tokens, direction A "Route" (source of truth).
+ * Values are "R G B" triplets so Tailwind can add alpha: rgb(var(--accent) / <alpha-value>).
+ * Copied into: spring-cod-settlement/web/src/brand, spring-parcel-platform/dashboard/src/brand,
+ * spring-ai-settlement-copilot/web/src/app/brand (Tailwind v4 @theme). Edit here first, then copy.
+ */
+:root {
+  /* surfaces: cool, low-glare greys */
+  --bg: 247 248 250;        /* #F7F8FA */
+  --panel: 255 255 255;     /* #FFFFFF */
+  --subtle: 238 241 245;    /* #EEF1F5 */
+  --line: 227 231 238;      /* #E3E7EE */
+  /* text */
+  --fg: 14 23 38;           /* #0E1726  16.9:1 on bg */
+  --muted: 85 96 116;       /* #556074   6.0:1 on bg */
+  --faint: 102 112 133;     /* #667085   4.6:1 on bg (AA for small labels) */
+  /* brand */
+  --accent: 29 59 114;      /* #1D3B72  Route navy (primary), 11:1 with white */
+  --accent-fg: 255 255 255;
+  --signal: 0 179 126;      /* #00B37E  signal green: highlights, the logo dot. Not for small text */
+  --signal-ink: 0 122 86;   /* #007A56  signal green when it must be read (5.4:1 on white) */
+  /* semantic */
+  --success: 0 122 86;      /* #007A56 */
+  --warn: 180 83 9;         /* #B45309 */
+  --danger: 190 18 60;      /* #BE123C */
+  --info: 3 105 161;        /* #0369A1 */
+  /* data viz: second series next to navy */
+  --chart-2: 168 182 204;   /* #A8B6CC */
+  /* logo mark */
+  --brand-tile: 29 59 114;
+  --brand-ink: 255 255 255;
+  --brand-dot: 0 179 126;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: 11 18 32;           /* #0B1220 */
+  --panel: 17 26 46;        /* #111A2E */
+  --subtle: 24 35 58;       /* #18233A */
+  --line: 34 48 77;         /* #22304D */
+  --fg: 232 238 248;        /* #E8EEF8 */
+  --muted: 154 168 192;     /* #9AA8C0 */
+  --faint: 125 138 163;     /* #7D8AA3  4.7:1 on panel */
+  --accent: 134 168 255;    /* #86A8FF */
+  --accent-fg: 11 18 32;
+  --signal: 46 230 166;     /* #2EE6A6 */
+  --signal-ink: 46 230 166;
+  --success: 52 211 153;
+  --warn: 251 191 36;
+  --danger: 251 113 133;
+  --info: 56 189 248;
+  --chart-2: 61 78 110;     /* #3D4E6E */
+  --brand-tile: 134 168 255;
+  --brand-ink: 11 18 32;
+  --brand-dot: 11 18 32;
+  color-scheme: dark;
+}
