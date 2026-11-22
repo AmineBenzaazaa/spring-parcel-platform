@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.order.application;
+package com.msetransport.parcel.order.application;
 
 import java.math.BigDecimal;
 

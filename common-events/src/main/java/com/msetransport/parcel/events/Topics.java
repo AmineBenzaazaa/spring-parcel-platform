@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.events;
+package com.msetransport.parcel.events;
 
 /**
  * Kafka topic names. The ".v1" suffix is the topic contract version: a breaking change

@@ -1,9 +1,9 @@
-package com.benzaazaa.parcel.notification.web;
+package com.msetransport.parcel.notification.web;
 
-import com.benzaazaa.parcel.notification.application.NotificationService;
-import com.benzaazaa.parcel.notification.domain.Channel;
-import com.benzaazaa.parcel.notification.domain.DeliveryResult;
-import com.benzaazaa.parcel.notification.domain.Notification;
+import com.msetransport.parcel.notification.application.NotificationService;
+import com.msetransport.parcel.notification.domain.Channel;
+import com.msetransport.parcel.notification.domain.DeliveryResult;
+import com.msetransport.parcel.notification.domain.Notification;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;

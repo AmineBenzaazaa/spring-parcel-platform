@@ -1,9 +1,9 @@
-package com.benzaazaa.parcel.events;
+package com.msetransport.parcel.events;
 
-import com.benzaazaa.parcel.events.delivery.DeliveryStatusChangedV1;
-import com.benzaazaa.parcel.events.delivery.DeliveryStatusV1;
-import com.benzaazaa.parcel.events.order.OrderCancelledV1;
-import com.benzaazaa.parcel.events.order.OrderCreatedV1;
+import com.msetransport.parcel.events.delivery.DeliveryStatusChangedV1;
+import com.msetransport.parcel.events.delivery.DeliveryStatusV1;
+import com.msetransport.parcel.events.order.OrderCancelledV1;
+import com.msetransport.parcel.events.order.OrderCreatedV1;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

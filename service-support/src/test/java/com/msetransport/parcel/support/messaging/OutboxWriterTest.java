@@ -1,9 +1,9 @@
-package com.benzaazaa.parcel.support.messaging;
+package com.msetransport.parcel.support.messaging;
 
-import com.benzaazaa.parcel.events.EventCodec;
-import com.benzaazaa.parcel.events.EventTypes;
-import com.benzaazaa.parcel.events.order.OrderCancelledV1;
-import com.benzaazaa.parcel.support.correlation.CorrelationId;
+import com.msetransport.parcel.events.EventCodec;
+import com.msetransport.parcel.events.EventTypes;
+import com.msetransport.parcel.events.order.OrderCancelledV1;
+import com.msetransport.parcel.support.correlation.CorrelationId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

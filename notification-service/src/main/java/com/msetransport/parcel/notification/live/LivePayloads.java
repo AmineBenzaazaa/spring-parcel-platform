@@ -1,6 +1,6 @@
-package com.benzaazaa.parcel.notification.live;
+package com.msetransport.parcel.notification.live;
 
-import com.benzaazaa.parcel.notification.domain.Notification;
+import com.msetransport.parcel.notification.domain.Notification;
 
 import java.math.BigDecimal;
 import java.time.Instant;

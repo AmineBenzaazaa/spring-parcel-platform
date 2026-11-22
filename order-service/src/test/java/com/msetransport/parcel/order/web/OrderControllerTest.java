@@ -1,12 +1,12 @@
-package com.benzaazaa.parcel.order.web;
+package com.msetransport.parcel.order.web;
 
-import com.benzaazaa.parcel.order.application.CreateOrderCommand;
-import com.benzaazaa.parcel.order.application.OrderService;
-import com.benzaazaa.parcel.order.application.OrderStats;
-import com.benzaazaa.parcel.order.domain.Order;
-import com.benzaazaa.parcel.order.domain.OrderStatus;
-import com.benzaazaa.parcel.support.security.ResourceServerSecurityConfig;
-import com.benzaazaa.parcel.support.web.BusinessRuleException;
+import com.msetransport.parcel.order.application.CreateOrderCommand;
+import com.msetransport.parcel.order.application.OrderService;
+import com.msetransport.parcel.order.application.OrderStats;
+import com.msetransport.parcel.order.domain.Order;
+import com.msetransport.parcel.order.domain.OrderStatus;
+import com.msetransport.parcel.support.security.ResourceServerSecurityConfig;
+import com.msetransport.parcel.support.web.BusinessRuleException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

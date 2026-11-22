@@ -1,7 +1,7 @@
-package com.benzaazaa.parcel.notification.messaging;
+package com.msetransport.parcel.notification.messaging;
 
-import com.benzaazaa.parcel.events.Topics;
-import com.benzaazaa.parcel.support.messaging.KafkaErrorHandling;
+import com.msetransport.parcel.events.Topics;
+import com.msetransport.parcel.support.messaging.KafkaErrorHandling;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

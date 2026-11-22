@@ -1,6 +1,6 @@
-package com.benzaazaa.parcel.support.messaging;
+package com.msetransport.parcel.support.messaging;
 
-import com.benzaazaa.parcel.events.EventCodec;
+import com.msetransport.parcel.events.EventCodec;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;

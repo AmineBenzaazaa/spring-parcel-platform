@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.auth.user;
+package com.msetransport.parcel.auth.user;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

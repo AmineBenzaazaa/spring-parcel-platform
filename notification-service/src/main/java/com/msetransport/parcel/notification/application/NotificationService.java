@@ -1,13 +1,13 @@
-package com.benzaazaa.parcel.notification.application;
+package com.msetransport.parcel.notification.application;
 
-import com.benzaazaa.parcel.events.delivery.DeliveryStatusChangedV1;
-import com.benzaazaa.parcel.notification.domain.DeliveryResult;
-import com.benzaazaa.parcel.notification.domain.MessageTemplates;
-import com.benzaazaa.parcel.notification.domain.Notification;
-import com.benzaazaa.parcel.notification.domain.NotificationRepository;
-import com.benzaazaa.parcel.notification.sender.NotificationSender;
-import com.benzaazaa.parcel.notification.sender.OutgoingMessage;
-import com.benzaazaa.parcel.support.messaging.IdempotencyGuard;
+import com.msetransport.parcel.events.delivery.DeliveryStatusChangedV1;
+import com.msetransport.parcel.notification.domain.DeliveryResult;
+import com.msetransport.parcel.notification.domain.MessageTemplates;
+import com.msetransport.parcel.notification.domain.Notification;
+import com.msetransport.parcel.notification.domain.NotificationRepository;
+import com.msetransport.parcel.notification.sender.NotificationSender;
+import com.msetransport.parcel.notification.sender.OutgoingMessage;
+import com.msetransport.parcel.support.messaging.IdempotencyGuard;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;

@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.notification;
+package com.msetransport.parcel.notification;
 
 import com.sun.net.httpserver.HttpServer;
 

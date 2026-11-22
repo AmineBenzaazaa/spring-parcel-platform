@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.events.delivery;
+package com.msetransport.parcel.events.delivery;
 
 import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 

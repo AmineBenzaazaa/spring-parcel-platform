@@ -1,14 +1,14 @@
-package com.benzaazaa.parcel.notification.application;
+package com.msetransport.parcel.notification.application;
 
-import com.benzaazaa.parcel.events.delivery.DeliveryStatusChangedV1;
-import com.benzaazaa.parcel.events.delivery.DeliveryStatusV1;
-import com.benzaazaa.parcel.notification.domain.Channel;
-import com.benzaazaa.parcel.notification.domain.DeliveryResult;
-import com.benzaazaa.parcel.notification.domain.Notification;
-import com.benzaazaa.parcel.notification.domain.NotificationRepository;
-import com.benzaazaa.parcel.notification.sender.NotificationSender;
-import com.benzaazaa.parcel.notification.sender.OutgoingMessage;
-import com.benzaazaa.parcel.support.messaging.IdempotencyGuard;
+import com.msetransport.parcel.events.delivery.DeliveryStatusChangedV1;
+import com.msetransport.parcel.events.delivery.DeliveryStatusV1;
+import com.msetransport.parcel.notification.domain.Channel;
+import com.msetransport.parcel.notification.domain.DeliveryResult;
+import com.msetransport.parcel.notification.domain.Notification;
+import com.msetransport.parcel.notification.domain.NotificationRepository;
+import com.msetransport.parcel.notification.sender.NotificationSender;
+import com.msetransport.parcel.notification.sender.OutgoingMessage;
+import com.msetransport.parcel.support.messaging.IdempotencyGuard;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -83,7 +83,7 @@ class NotificationServiceTest {
 
     @Test
     void phoneNumbersAreMaskedInLogs() {
-        assertThat(com.benzaazaa.parcel.notification.sender.LogNotificationSender.mask("+212612345678"))
+        assertThat(com.msetransport.parcel.notification.sender.LogNotificationSender.mask("+212612345678"))
                 .isEqualTo("+2126*****678");
     }
 }

@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.gateway;
+package com.msetransport.parcel.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

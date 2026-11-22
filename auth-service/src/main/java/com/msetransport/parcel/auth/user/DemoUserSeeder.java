@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.auth.user;
+package com.msetransport.parcel.auth.user;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

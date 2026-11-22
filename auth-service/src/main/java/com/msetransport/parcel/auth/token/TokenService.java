@@ -1,6 +1,6 @@
-package com.benzaazaa.parcel.auth.token;
+package com.msetransport.parcel.auth.token;
 
-import com.benzaazaa.parcel.auth.user.UserAccount;
+import com.msetransport.parcel.auth.user.UserAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;

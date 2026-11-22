@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.auth.user;
+package com.msetransport.parcel.auth.user;
 
 public enum Role {
     /** Warehouse / operations staff: sees and manages everything. */

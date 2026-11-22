@@ -1,6 +1,6 @@
-package com.benzaazaa.parcel.dispatch.domain;
+package com.msetransport.parcel.dispatch.domain;
 
-import com.benzaazaa.parcel.events.delivery.DeliveryStatusV1;
+import com.msetransport.parcel.events.delivery.DeliveryStatusV1;
 
 import java.util.EnumSet;
 import java.util.Map;

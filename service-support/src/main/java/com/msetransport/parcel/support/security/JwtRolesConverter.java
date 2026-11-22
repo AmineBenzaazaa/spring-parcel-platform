@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.support.security;
+package com.msetransport.parcel.support.security;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;

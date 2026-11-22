@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.notification.sender;
+package com.msetransport.parcel.notification.sender;
 
 import java.util.UUID;
 

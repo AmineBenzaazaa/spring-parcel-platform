@@ -1,11 +1,11 @@
-package com.benzaazaa.parcel.order.messaging;
+package com.msetransport.parcel.order.messaging;
 
-import com.benzaazaa.parcel.events.EventCodec;
-import com.benzaazaa.parcel.events.EventEnvelope;
-import com.benzaazaa.parcel.events.EventTypes;
-import com.benzaazaa.parcel.events.Topics;
-import com.benzaazaa.parcel.events.delivery.DeliveryStatusChangedV1;
-import com.benzaazaa.parcel.order.application.DeliveryStatusProjector;
+import com.msetransport.parcel.events.EventCodec;
+import com.msetransport.parcel.events.EventEnvelope;
+import com.msetransport.parcel.events.EventTypes;
+import com.msetransport.parcel.events.Topics;
+import com.msetransport.parcel.events.delivery.DeliveryStatusChangedV1;
+import com.msetransport.parcel.order.application.DeliveryStatusProjector;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;

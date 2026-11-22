@@ -1,6 +1,6 @@
-package com.benzaazaa.parcel.notification.domain;
+package com.msetransport.parcel.notification.domain;
 
-import com.benzaazaa.parcel.events.delivery.DeliveryStatusChangedV1;
+import com.msetransport.parcel.events.delivery.DeliveryStatusChangedV1;
 
 import java.math.BigDecimal;
 import java.util.Optional;

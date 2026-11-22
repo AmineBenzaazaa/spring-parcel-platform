@@ -1,6 +1,6 @@
-package com.benzaazaa.parcel.notification.sms;
+package com.msetransport.parcel.notification.sms;
 
-import com.benzaazaa.parcel.notification.domain.DeliveryResult;
+import com.msetransport.parcel.notification.domain.DeliveryResult;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.retry.Retry;

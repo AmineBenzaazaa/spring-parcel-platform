@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.notification.live;
+package com.msetransport.parcel.notification.live;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

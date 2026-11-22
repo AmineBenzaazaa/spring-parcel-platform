@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.gateway;
+package com.msetransport.parcel.gateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;

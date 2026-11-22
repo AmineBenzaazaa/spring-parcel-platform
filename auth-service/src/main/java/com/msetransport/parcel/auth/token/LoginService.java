@@ -1,7 +1,7 @@
-package com.benzaazaa.parcel.auth.token;
+package com.msetransport.parcel.auth.token;
 
-import com.benzaazaa.parcel.auth.user.UserAccount;
-import com.benzaazaa.parcel.auth.user.UserAccountRepository;
+import com.msetransport.parcel.auth.user.UserAccount;
+import com.msetransport.parcel.auth.user.UserAccountRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.order.config;
+package com.msetransport.parcel.order.config;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * Kept off the main class so @WebMvcTest slices do not try to build repositories.
  */
 @Configuration
-@EntityScan({"com.benzaazaa.parcel.order", "com.benzaazaa.parcel.support"})
-@EnableJpaRepositories({"com.benzaazaa.parcel.order", "com.benzaazaa.parcel.support"})
+@EntityScan({"com.msetransport.parcel.order", "com.msetransport.parcel.support"})
+@EnableJpaRepositories({"com.msetransport.parcel.order", "com.msetransport.parcel.support"})
 public class PersistenceConfig {
 }

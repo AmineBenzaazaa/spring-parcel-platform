@@ -1,13 +1,13 @@
-package com.benzaazaa.parcel.dispatch.messaging;
+package com.msetransport.parcel.dispatch.messaging;
 
-import com.benzaazaa.parcel.dispatch.application.DispatchService;
-import com.benzaazaa.parcel.events.EventCodec;
-import com.benzaazaa.parcel.events.EventEnvelope;
-import com.benzaazaa.parcel.events.EventTypes;
-import com.benzaazaa.parcel.events.InvalidEventException;
-import com.benzaazaa.parcel.events.Topics;
-import com.benzaazaa.parcel.events.order.OrderCancelledV1;
-import com.benzaazaa.parcel.events.order.OrderCreatedV1;
+import com.msetransport.parcel.dispatch.application.DispatchService;
+import com.msetransport.parcel.events.EventCodec;
+import com.msetransport.parcel.events.EventEnvelope;
+import com.msetransport.parcel.events.EventTypes;
+import com.msetransport.parcel.events.InvalidEventException;
+import com.msetransport.parcel.events.Topics;
+import com.msetransport.parcel.events.order.OrderCancelledV1;
+import com.msetransport.parcel.events.order.OrderCreatedV1;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;

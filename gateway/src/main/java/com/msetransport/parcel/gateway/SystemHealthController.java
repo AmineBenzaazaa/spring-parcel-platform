@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.gateway;
+package com.msetransport.parcel.gateway;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;

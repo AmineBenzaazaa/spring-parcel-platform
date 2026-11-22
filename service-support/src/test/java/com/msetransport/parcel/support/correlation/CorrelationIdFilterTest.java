@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.support.correlation;
+package com.msetransport.parcel.support.correlation;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockFilterChain;

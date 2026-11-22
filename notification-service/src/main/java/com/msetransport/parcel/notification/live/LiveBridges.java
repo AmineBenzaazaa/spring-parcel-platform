@@ -1,9 +1,9 @@
-package com.benzaazaa.parcel.notification.live;
+package com.msetransport.parcel.notification.live;
 
-import com.benzaazaa.parcel.notification.application.NotificationRecorded;
-import com.benzaazaa.parcel.notification.live.LivePayloads.CircuitLive;
-import com.benzaazaa.parcel.notification.live.LivePayloads.NotificationLive;
-import com.benzaazaa.parcel.notification.sms.SmsConfig;
+import com.msetransport.parcel.notification.application.NotificationRecorded;
+import com.msetransport.parcel.notification.live.LivePayloads.CircuitLive;
+import com.msetransport.parcel.notification.live.LivePayloads.NotificationLive;
+import com.msetransport.parcel.notification.sms.SmsConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import org.springframework.beans.factory.ObjectProvider;

@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.auth.config;
+package com.msetransport.parcel.auth.config;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.JWKSet;

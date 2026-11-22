@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.notification.domain;
+package com.msetransport.parcel.notification.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

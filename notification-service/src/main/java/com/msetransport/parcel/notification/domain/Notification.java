@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.notification.domain;
+package com.msetransport.parcel.notification.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

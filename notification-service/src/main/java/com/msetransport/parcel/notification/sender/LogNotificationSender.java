@@ -1,7 +1,7 @@
-package com.benzaazaa.parcel.notification.sender;
+package com.msetransport.parcel.notification.sender;
 
-import com.benzaazaa.parcel.notification.domain.Channel;
-import com.benzaazaa.parcel.notification.domain.DeliveryResult;
+import com.msetransport.parcel.notification.domain.Channel;
+import com.msetransport.parcel.notification.domain.DeliveryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

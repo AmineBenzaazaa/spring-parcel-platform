@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.gateway;
+package com.msetransport.parcel.gateway;
 
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.support.security;
+package com.msetransport.parcel.support.security;
 
 import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Value;

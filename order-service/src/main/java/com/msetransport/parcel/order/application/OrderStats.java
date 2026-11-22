@@ -1,6 +1,6 @@
-package com.benzaazaa.parcel.order.application;
+package com.msetransport.parcel.order.application;
 
-import com.benzaazaa.parcel.order.domain.OrderStatus;
+import com.msetransport.parcel.order.domain.OrderStatus;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

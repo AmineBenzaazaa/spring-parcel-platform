@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.auth.user;
+package com.msetransport.parcel.auth.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

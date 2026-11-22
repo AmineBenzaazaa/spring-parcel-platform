@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.events;
+package com.msetransport.parcel.events;
 
 /** Kafka record header names. Headers mirror envelope fields so infra can route without parsing JSON. */
 public final class EventHeaders {

@@ -1,6 +1,6 @@
-package com.benzaazaa.parcel.dispatch.application;
+package com.msetransport.parcel.dispatch.application;
 
-import com.benzaazaa.parcel.dispatch.domain.Courier;
+import com.msetransport.parcel.dispatch.domain.Courier;
 
 import java.util.UUID;
 

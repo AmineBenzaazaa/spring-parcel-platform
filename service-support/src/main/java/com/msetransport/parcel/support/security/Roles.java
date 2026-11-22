@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.support.security;
+package com.msetransport.parcel.support.security;
 
 public final class Roles {
 

@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.notification.live;
+package com.msetransport.parcel.notification.live;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

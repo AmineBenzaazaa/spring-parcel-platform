@@ -1,23 +1,23 @@
-package com.benzaazaa.parcel.order.integration;
+package com.msetransport.parcel.order.integration;
 
-import com.benzaazaa.parcel.events.EventCodec;
-import com.benzaazaa.parcel.events.EventEnvelope;
-import com.benzaazaa.parcel.events.EventHeaders;
-import com.benzaazaa.parcel.events.EventTypes;
-import com.benzaazaa.parcel.events.Topics;
-import com.benzaazaa.parcel.events.delivery.DeliveryStatusChangedV1;
-import com.benzaazaa.parcel.events.delivery.DeliveryStatusV1;
-import com.benzaazaa.parcel.order.application.CreateOrderCommand;
-import com.benzaazaa.parcel.order.application.DeliveryStatusProjector;
-import com.benzaazaa.parcel.order.application.OrderService;
-import com.benzaazaa.parcel.order.domain.Order;
-import com.benzaazaa.parcel.order.domain.OrderRepository;
-import com.benzaazaa.parcel.order.domain.OrderStatus;
-import com.benzaazaa.parcel.support.correlation.CorrelationId;
-import com.benzaazaa.parcel.support.messaging.KafkaErrorHandling;
-import com.benzaazaa.parcel.support.messaging.OutboxRepository;
-import com.benzaazaa.parcel.support.messaging.ProcessedEvent;
-import com.benzaazaa.parcel.support.messaging.ProcessedEventRepository;
+import com.msetransport.parcel.events.EventCodec;
+import com.msetransport.parcel.events.EventEnvelope;
+import com.msetransport.parcel.events.EventHeaders;
+import com.msetransport.parcel.events.EventTypes;
+import com.msetransport.parcel.events.Topics;
+import com.msetransport.parcel.events.delivery.DeliveryStatusChangedV1;
+import com.msetransport.parcel.events.delivery.DeliveryStatusV1;
+import com.msetransport.parcel.order.application.CreateOrderCommand;
+import com.msetransport.parcel.order.application.DeliveryStatusProjector;
+import com.msetransport.parcel.order.application.OrderService;
+import com.msetransport.parcel.order.domain.Order;
+import com.msetransport.parcel.order.domain.OrderRepository;
+import com.msetransport.parcel.order.domain.OrderStatus;
+import com.msetransport.parcel.support.correlation.CorrelationId;
+import com.msetransport.parcel.support.messaging.KafkaErrorHandling;
+import com.msetransport.parcel.support.messaging.OutboxRepository;
+import com.msetransport.parcel.support.messaging.ProcessedEvent;
+import com.msetransport.parcel.support.messaging.ProcessedEventRepository;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -177,7 +177,7 @@ class OrderMessagingIntegrationTest {
     void cancellationIsPublishedAfterTheCreationForTheSameKey() {
         Order order = createOrder();
         orderService.cancel(order.getId(), "merchant request",
-                new com.benzaazaa.parcel.support.security.AuthenticatedUser("ops", java.util.Set.of("OPS"), null, null));
+                new com.msetransport.parcel.support.security.AuthenticatedUser("ops", java.util.Set.of("OPS"), null, null));
 
         var rows = outbox.findByAggregateIdOrderBySeq(order.getId().toString());
 
@@ -190,8 +190,8 @@ class OrderMessagingIntegrationTest {
 
     @Test
     void statsAndStatusFilterRunAgainstRealPostgres() {
-        var ops = new com.benzaazaa.parcel.support.security.AuthenticatedUser("ops", java.util.Set.of("OPS"), null, null);
-        var otherMerchant = new com.benzaazaa.parcel.support.security.AuthenticatedUser("m2", java.util.Set.of("MERCHANT"),
+        var ops = new com.msetransport.parcel.support.security.AuthenticatedUser("ops", java.util.Set.of("OPS"), null, null);
+        var otherMerchant = new com.msetransport.parcel.support.security.AuthenticatedUser("m2", java.util.Set.of("MERCHANT"),
                 "M-9999", null);
         long createdBefore = orderService.stats(ops).byStatus().get(OrderStatus.CREATED);
         Order order = createOrder();

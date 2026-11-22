@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.support.web;
+package com.msetransport.parcel.support.web;
 
 public class NotFoundException extends RuntimeException {
 

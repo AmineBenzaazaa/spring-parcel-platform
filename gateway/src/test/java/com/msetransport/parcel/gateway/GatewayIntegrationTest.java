@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.gateway;
+package com.msetransport.parcel.gateway;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;

@@ -1,6 +1,6 @@
-package com.benzaazaa.parcel.dispatch.messaging;
+package com.msetransport.parcel.dispatch.messaging;
 
-import com.benzaazaa.parcel.events.Topics;
+import com.msetransport.parcel.events.Topics;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

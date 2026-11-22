@@ -1,8 +1,8 @@
-package com.benzaazaa.parcel.auth.web;
+package com.msetransport.parcel.auth.web;
 
-import com.benzaazaa.parcel.auth.token.LoginService;
-import com.benzaazaa.parcel.auth.token.TokenService;
-import com.benzaazaa.parcel.support.security.AuthenticatedUser;
+import com.msetransport.parcel.auth.token.LoginService;
+import com.msetransport.parcel.auth.token.TokenService;
+import com.msetransport.parcel.support.security.AuthenticatedUser;
 import com.nimbusds.jose.jwk.JWKSet;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -63,7 +63,7 @@ public class AuthController {
     @ExceptionHandler(LoginService.InvalidCredentialsException.class)
     ProblemDetail invalidCredentials(LoginService.InvalidCredentialsException ex) {
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
-        pd.setType(URI.create("https://parcel.benzaazaa.com/problems/invalid-credentials"));
+        pd.setType(URI.create("https://dispatch.msetransport.com/problems/invalid-credentials"));
         pd.setTitle("Authentication failed");
         return pd;
     }

@@ -1,6 +1,6 @@
-package com.benzaazaa.parcel.support.messaging;
+package com.msetransport.parcel.support.messaging;
 
-import com.benzaazaa.parcel.events.EventHeaders;
+import com.msetransport.parcel.events.EventHeaders;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Test;

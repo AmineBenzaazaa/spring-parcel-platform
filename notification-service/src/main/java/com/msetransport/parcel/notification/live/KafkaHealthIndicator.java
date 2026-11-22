@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.notification.live;
+package com.msetransport.parcel.notification.live;
 
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.DescribeClusterOptions;

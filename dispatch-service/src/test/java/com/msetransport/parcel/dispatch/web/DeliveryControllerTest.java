@@ -1,11 +1,11 @@
-package com.benzaazaa.parcel.dispatch.web;
+package com.msetransport.parcel.dispatch.web;
 
-import com.benzaazaa.parcel.dispatch.application.CourierView;
-import com.benzaazaa.parcel.dispatch.application.DispatchService;
-import com.benzaazaa.parcel.dispatch.domain.Courier;
-import com.benzaazaa.parcel.dispatch.domain.Delivery;
-import com.benzaazaa.parcel.dispatch.domain.DeliveryStatus;
-import com.benzaazaa.parcel.support.security.ResourceServerSecurityConfig;
+import com.msetransport.parcel.dispatch.application.CourierView;
+import com.msetransport.parcel.dispatch.application.DispatchService;
+import com.msetransport.parcel.dispatch.domain.Courier;
+import com.msetransport.parcel.dispatch.domain.Delivery;
+import com.msetransport.parcel.dispatch.domain.DeliveryStatus;
+import com.msetransport.parcel.support.security.ResourceServerSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

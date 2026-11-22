@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.support.core;
+package com.msetransport.parcel.support.core;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

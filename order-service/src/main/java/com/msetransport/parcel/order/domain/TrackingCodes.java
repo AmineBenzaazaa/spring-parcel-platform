@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.order.domain;
+package com.msetransport.parcel.order.domain;
 
 import java.security.SecureRandom;
 

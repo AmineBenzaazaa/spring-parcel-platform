@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.dispatch.domain;
+package com.msetransport.parcel.dispatch.domain;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

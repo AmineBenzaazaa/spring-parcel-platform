@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.support.messaging;
+package com.msetransport.parcel.support.messaging;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

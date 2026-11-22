@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.events;
+package com.msetransport.parcel.events;
 
 /**
  * The message can never be processed (malformed JSON, missing fields, unknown type).

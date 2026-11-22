@@ -1,8 +1,8 @@
-package com.benzaazaa.parcel.notification.live;
+package com.msetransport.parcel.notification.live;
 
-import com.benzaazaa.parcel.notification.live.LivePayloads.CircuitLive;
-import com.benzaazaa.parcel.notification.live.LivePayloads.TimelineEntry;
-import com.benzaazaa.parcel.support.security.ResourceServerSecurityConfig;
+import com.msetransport.parcel.notification.live.LivePayloads.CircuitLive;
+import com.msetransport.parcel.notification.live.LivePayloads.TimelineEntry;
+import com.msetransport.parcel.support.security.ResourceServerSecurityConfig;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.Test;

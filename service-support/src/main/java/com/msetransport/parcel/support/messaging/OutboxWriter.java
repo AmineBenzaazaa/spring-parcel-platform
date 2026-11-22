@@ -1,9 +1,9 @@
-package com.benzaazaa.parcel.support.messaging;
+package com.msetransport.parcel.support.messaging;
 
-import com.benzaazaa.parcel.events.EventCodec;
-import com.benzaazaa.parcel.events.EventEnvelope;
-import com.benzaazaa.parcel.events.ParcelEvent;
-import com.benzaazaa.parcel.support.correlation.CorrelationId;
+import com.msetransport.parcel.events.EventCodec;
+import com.msetransport.parcel.events.EventEnvelope;
+import com.msetransport.parcel.events.ParcelEvent;
+import com.msetransport.parcel.support.correlation.CorrelationId;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

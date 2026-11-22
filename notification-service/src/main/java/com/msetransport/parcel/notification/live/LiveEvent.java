@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.notification.live;
+package com.msetransport.parcel.notification.live;
 
 /**
  * What goes down the SSE pipe: {@code event: <name>} plus a JSON {@code data:} line.

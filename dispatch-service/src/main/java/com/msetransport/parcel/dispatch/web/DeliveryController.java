@@ -1,10 +1,10 @@
-package com.benzaazaa.parcel.dispatch.web;
+package com.msetransport.parcel.dispatch.web;
 
-import com.benzaazaa.parcel.dispatch.application.CourierView;
-import com.benzaazaa.parcel.dispatch.application.DispatchService;
-import com.benzaazaa.parcel.dispatch.domain.Delivery;
-import com.benzaazaa.parcel.dispatch.domain.DeliveryStatus;
-import com.benzaazaa.parcel.support.security.AuthenticatedUser;
+import com.msetransport.parcel.dispatch.application.CourierView;
+import com.msetransport.parcel.dispatch.application.DispatchService;
+import com.msetransport.parcel.dispatch.domain.Delivery;
+import com.msetransport.parcel.dispatch.domain.DeliveryStatus;
+import com.msetransport.parcel.support.security.AuthenticatedUser;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

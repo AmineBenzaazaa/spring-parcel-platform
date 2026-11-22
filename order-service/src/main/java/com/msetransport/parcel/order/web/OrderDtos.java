@@ -1,7 +1,7 @@
-package com.benzaazaa.parcel.order.web;
+package com.msetransport.parcel.order.web;
 
-import com.benzaazaa.parcel.order.domain.Order;
-import com.benzaazaa.parcel.order.domain.OrderStatus;
+import com.msetransport.parcel.order.domain.Order;
+import com.msetransport.parcel.order.domain.OrderStatus;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;

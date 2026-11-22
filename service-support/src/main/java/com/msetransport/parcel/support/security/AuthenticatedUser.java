@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.support.security;
+package com.msetransport.parcel.support.security;
 
 import org.springframework.security.oauth2.jwt.Jwt;
 

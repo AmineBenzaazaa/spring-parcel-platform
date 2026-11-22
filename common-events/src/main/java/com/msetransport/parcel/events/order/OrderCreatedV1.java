@@ -1,7 +1,7 @@
-package com.benzaazaa.parcel.events.order;
+package com.msetransport.parcel.events.order;
 
-import com.benzaazaa.parcel.events.EventTypes;
-import com.benzaazaa.parcel.events.ParcelEvent;
+import com.msetransport.parcel.events.EventTypes;
+import com.msetransport.parcel.events.ParcelEvent;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.math.BigDecimal;

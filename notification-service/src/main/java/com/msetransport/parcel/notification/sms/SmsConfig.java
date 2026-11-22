@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.notification.sms;
+package com.msetransport.parcel.notification.sms;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.retry.RetryRegistry;

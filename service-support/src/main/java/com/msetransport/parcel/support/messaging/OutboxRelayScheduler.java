@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.support.messaging;
+package com.msetransport.parcel.support.messaging;
 
 import org.springframework.scheduling.annotation.Scheduled;
 

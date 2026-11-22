@@ -1,7 +1,7 @@
-package com.benzaazaa.parcel.notification.domain;
+package com.msetransport.parcel.notification.domain;
 
-import com.benzaazaa.parcel.events.delivery.DeliveryStatusChangedV1;
-import com.benzaazaa.parcel.events.delivery.DeliveryStatusV1;
+import com.msetransport.parcel.events.delivery.DeliveryStatusChangedV1;
+import com.msetransport.parcel.events.delivery.DeliveryStatusV1;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;

@@ -1,6 +1,6 @@
-package com.benzaazaa.parcel.support.web;
+package com.msetransport.parcel.support.web;
 
-import com.benzaazaa.parcel.support.correlation.CorrelationId;
+import com.msetransport.parcel.support.correlation.CorrelationId;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -26,7 +26,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private static final String TYPE_BASE = "https://parcel.benzaazaa.com/problems/";
+    private static final String TYPE_BASE = "https://dispatch.msetransport.com/problems/";
 
     @ExceptionHandler(NotFoundException.class)
     ProblemDetail notFound(NotFoundException ex) {

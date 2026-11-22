@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.events;
+package com.msetransport.parcel.events;
 
 /**
  * Marker for every event payload. Each payload declares its logical type and schema version,

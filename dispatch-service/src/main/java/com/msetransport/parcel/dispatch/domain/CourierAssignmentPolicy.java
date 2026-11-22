@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.dispatch.domain;
+package com.msetransport.parcel.dispatch.domain;
 
 import java.util.Comparator;
 import java.util.List;

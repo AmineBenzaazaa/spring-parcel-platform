@@ -1,6 +1,6 @@
-package com.benzaazaa.parcel.auth.config;
+package com.msetransport.parcel.auth.config;
 
-import com.benzaazaa.parcel.support.security.JwtRolesConverter;
+import com.msetransport.parcel.support.security.JwtRolesConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

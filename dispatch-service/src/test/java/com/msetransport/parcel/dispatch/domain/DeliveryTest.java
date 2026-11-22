@@ -1,6 +1,6 @@
-package com.benzaazaa.parcel.dispatch.domain;
+package com.msetransport.parcel.dispatch.domain;
 
-import com.benzaazaa.parcel.support.web.BusinessRuleException;
+import com.msetransport.parcel.support.web.BusinessRuleException;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

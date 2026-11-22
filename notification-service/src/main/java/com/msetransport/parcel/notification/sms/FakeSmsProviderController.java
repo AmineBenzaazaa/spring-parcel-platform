@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.notification.sms;
+package com.msetransport.parcel.notification.sms;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import org.slf4j.Logger;

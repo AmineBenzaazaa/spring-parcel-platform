@@ -1,9 +1,9 @@
-package com.benzaazaa.parcel.auth;
+package com.msetransport.parcel.auth;
 
-import com.benzaazaa.parcel.auth.config.JwtKeyConfig;
-import com.benzaazaa.parcel.auth.token.TokenService;
-import com.benzaazaa.parcel.auth.user.Role;
-import com.benzaazaa.parcel.auth.user.UserAccount;
+import com.msetransport.parcel.auth.config.JwtKeyConfig;
+import com.msetransport.parcel.auth.token.TokenService;
+import com.msetransport.parcel.auth.user.Role;
+import com.msetransport.parcel.auth.user.UserAccount;
 import com.nimbusds.jose.jwk.RSAKey;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.jwt.Jwt;

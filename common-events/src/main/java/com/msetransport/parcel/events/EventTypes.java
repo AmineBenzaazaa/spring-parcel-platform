@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.events;
+package com.msetransport.parcel.events;
 
 /** Logical event type names (stable, independent of Java class names). */
 public final class EventTypes {

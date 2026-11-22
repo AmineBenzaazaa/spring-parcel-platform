@@ -1,6 +1,6 @@
-package com.benzaazaa.parcel.support.messaging;
+package com.msetransport.parcel.support.messaging;
 
-import com.benzaazaa.parcel.events.InvalidEventException;
+import com.msetransport.parcel.events.InvalidEventException;
 import org.apache.kafka.common.TopicPartition;
 import org.springframework.kafka.core.KafkaOperations;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;

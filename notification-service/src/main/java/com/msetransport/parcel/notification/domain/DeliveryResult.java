@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.notification.domain;
+package com.msetransport.parcel.notification.domain;
 
 /** Outcome of one send attempt on one channel. */
 public record DeliveryResult(Status status, String providerRef, String error) {

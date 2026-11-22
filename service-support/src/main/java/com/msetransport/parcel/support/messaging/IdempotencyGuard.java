@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.support.messaging;
+package com.msetransport.parcel.support.messaging;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

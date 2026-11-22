@@ -1,8 +1,8 @@
-package com.benzaazaa.parcel.notification.live;
+package com.msetransport.parcel.notification.live;
 
-import com.benzaazaa.parcel.notification.live.LivePayloads.CircuitLive;
-import com.benzaazaa.parcel.notification.live.LivePayloads.Hello;
-import com.benzaazaa.parcel.notification.live.LivePayloads.TimelineEntry;
+import com.msetransport.parcel.notification.live.LivePayloads.CircuitLive;
+import com.msetransport.parcel.notification.live.LivePayloads.Hello;
+import com.msetransport.parcel.notification.live.LivePayloads.TimelineEntry;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

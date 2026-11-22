@@ -1,6 +1,6 @@
-package com.benzaazaa.parcel.auth;
+package com.msetransport.parcel.auth;
 
-import com.benzaazaa.parcel.auth.user.DemoUserSeeder;
+import com.msetransport.parcel.auth.user.DemoUserSeeder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

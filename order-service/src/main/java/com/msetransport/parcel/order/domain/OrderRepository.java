@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.order.domain;
+package com.msetransport.parcel.order.domain;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

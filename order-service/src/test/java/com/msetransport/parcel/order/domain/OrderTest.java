@@ -1,7 +1,7 @@
-package com.benzaazaa.parcel.order.domain;
+package com.msetransport.parcel.order.domain;
 
-import com.benzaazaa.parcel.events.delivery.DeliveryStatusV1;
-import com.benzaazaa.parcel.support.web.BusinessRuleException;
+import com.msetransport.parcel.events.delivery.DeliveryStatusV1;
+import com.msetransport.parcel.support.web.BusinessRuleException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

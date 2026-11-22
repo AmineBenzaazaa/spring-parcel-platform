@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.support.security;
+package com.msetransport.parcel.support.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;

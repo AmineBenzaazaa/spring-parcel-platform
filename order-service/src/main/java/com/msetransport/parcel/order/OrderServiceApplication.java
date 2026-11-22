@@ -1,9 +1,9 @@
-package com.benzaazaa.parcel.order;
+package com.msetransport.parcel.order;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = {"com.benzaazaa.parcel.order", "com.benzaazaa.parcel.support"})
+@SpringBootApplication(scanBasePackages = {"com.msetransport.parcel.order", "com.msetransport.parcel.support"})
 public class OrderServiceApplication {
 
     public static void main(String[] args) {

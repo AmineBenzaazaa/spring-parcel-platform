@@ -1,7 +1,7 @@
-package com.benzaazaa.parcel.order.domain;
+package com.msetransport.parcel.order.domain;
 
-import com.benzaazaa.parcel.events.delivery.DeliveryStatusV1;
-import com.benzaazaa.parcel.support.web.BusinessRuleException;
+import com.msetransport.parcel.events.delivery.DeliveryStatusV1;
+import com.msetransport.parcel.support.web.BusinessRuleException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

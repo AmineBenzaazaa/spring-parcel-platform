@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.order.domain;
+package com.msetransport.parcel.order.domain;
 
 /** Order status as seen by the merchant. Delivery statuses come from dispatch-service events. */
 public enum OrderStatus {

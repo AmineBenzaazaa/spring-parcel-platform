@@ -1,4 +1,4 @@
-package com.benzaazaa.parcel.support.security;
+package com.msetransport.parcel.support.security;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.GrantedAuthority;

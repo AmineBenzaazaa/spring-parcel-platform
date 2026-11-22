@@ -1,7 +1,7 @@
-package com.benzaazaa.parcel.order.application;
+package com.msetransport.parcel.order.application;
 
-import com.benzaazaa.parcel.order.application.OrderStats.StatusRow;
-import com.benzaazaa.parcel.order.domain.OrderStatus;
+import com.msetransport.parcel.order.application.OrderStats.StatusRow;
+import com.msetransport.parcel.order.domain.OrderStatus;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

@@ -1,7 +1,7 @@
-package com.benzaazaa.parcel.notification.live;
+package com.msetransport.parcel.notification.live;
 
-import com.benzaazaa.parcel.events.EventCodec;
-import com.benzaazaa.parcel.events.Topics;
+import com.msetransport.parcel.events.EventCodec;
+import com.msetransport.parcel.events.Topics;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

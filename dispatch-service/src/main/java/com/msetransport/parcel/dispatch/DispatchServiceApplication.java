@@ -1,9 +1,9 @@
-package com.benzaazaa.parcel.dispatch;
+package com.msetransport.parcel.dispatch;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = {"com.benzaazaa.parcel.dispatch", "com.benzaazaa.parcel.support"})
+@SpringBootApplication(scanBasePackages = {"com.msetransport.parcel.dispatch", "com.msetransport.parcel.support"})
 public class DispatchServiceApplication {
 
     public static void main(String[] args) {

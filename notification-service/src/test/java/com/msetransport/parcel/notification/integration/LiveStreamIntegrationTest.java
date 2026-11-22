@@ -1,12 +1,12 @@
-package com.benzaazaa.parcel.notification.integration;
+package com.msetransport.parcel.notification.integration;
 
-import com.benzaazaa.parcel.events.EventCodec;
-import com.benzaazaa.parcel.events.EventEnvelope;
-import com.benzaazaa.parcel.events.Topics;
-import com.benzaazaa.parcel.events.delivery.DeliveryStatusChangedV1;
-import com.benzaazaa.parcel.events.delivery.DeliveryStatusV1;
-import com.benzaazaa.parcel.events.order.OrderCreatedV1;
-import com.benzaazaa.parcel.notification.live.ActivityEventRepository;
+import com.msetransport.parcel.events.EventCodec;
+import com.msetransport.parcel.events.EventEnvelope;
+import com.msetransport.parcel.events.Topics;
+import com.msetransport.parcel.events.delivery.DeliveryStatusChangedV1;
+import com.msetransport.parcel.events.delivery.DeliveryStatusV1;
+import com.msetransport.parcel.events.order.OrderCreatedV1;
+import com.msetransport.parcel.notification.live.ActivityEventRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

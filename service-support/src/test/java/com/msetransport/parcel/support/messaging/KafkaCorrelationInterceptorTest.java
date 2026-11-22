@@ -1,7 +1,7 @@
-package com.benzaazaa.parcel.support.messaging;
+package com.msetransport.parcel.support.messaging;
 
-import com.benzaazaa.parcel.events.EventHeaders;
-import com.benzaazaa.parcel.support.correlation.CorrelationId;
+import com.msetransport.parcel.events.EventHeaders;
+import com.msetransport.parcel.support.correlation.CorrelationId;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.Test;
 
