@@ -1,21 +1,34 @@
-# spring-parcel-platform
+<p align="center"><img src="brand/logo/mse-logo.svg" alt="MSE Transport" height="44"></p>
 
-An event-driven parcel delivery platform for **cash-on-delivery (COD) e-commerce**, built with
-**Java 21, Spring Boot 3.3, Spring Cloud Gateway, Spring Kafka, PostgreSQL, Redis, Resilience4j,
-Micrometer/OpenTelemetry and Testcontainers**.
+# MSE Dispatch
 
-The domain comes from real COD logistics in Morocco. Merchants create orders. A warehouse dispatches
-parcels to couriers by zone. Couriers go out, deliver and collect the cash, or fail, retry, and finally
-return the parcel to the merchant. Customers get an SMS at each step.
+**Live parcel operations for cash-on-delivery e-commerce.** MSE Dispatch takes a merchant's order
+from intake to the customer's door: it assigns a courier by zone, tracks every delivery attempt,
+retries failures, returns undeliverable parcels to the merchant and keeps the customer informed by
+SMS, with every step visible live to the operations team.
 
-> Companion docs: [docs/INTERVIEW-GUIDE.md](docs/INTERVIEW-GUIDE.md) has diagrams, a NestJS-to-Spring
-> mapping, a file-by-file trace of one order, and 30 interview questions answered with this code.
+![MSE Dispatch: live board, KPIs, couriers and customer messages](docs/screenshots/board.png)
 
-![Parcel Ops dashboard: live board, KPIs, couriers and notifications](docs/img/dashboard.png)
+MSE Dispatch is one of the three products of **MSE Transport**, a software suite for cash-on-delivery
+logistics in Morocco:
 
-> The **ops dashboard** (React + TypeScript, `dashboard/`) shows orders moving across the board as
-> Kafka events arrive. Run it with `docker compose up -d --build` and open http://localhost:3100.
-> See [Dashboard](#dashboard).
+| Product | What it does | Repository |
+|---|---|---|
+| **MSE Dispatch** | Live parcel operations (this repository) | `spring-parcel-platform` |
+| MSE Settle | Courier cash settlement and reconciliation | `spring-cod-settlement` |
+| MSE Copilot | AI assistant over settlement data, with checked figures and sources | `spring-ai-settlement-copilot` |
+
+Product overview: [`docs/PRODUCT-OVERVIEW.md`](docs/PRODUCT-OVERVIEW.md). Brand system:
+[`brand/BRAND.md`](brand/BRAND.md).
+
+Stack: Java 21 · Spring Boot 3.3 · Spring Cloud Gateway · Spring Kafka · PostgreSQL · Redis ·
+Resilience4j · Micrometer / OpenTelemetry · React 18 + TypeScript · Tailwind · framer-motion ·
+Testcontainers · Vitest · Playwright · Docker Compose · GitHub Actions.
+
+How it works, in one paragraph: merchants create orders; the platform dispatches parcels to couriers
+by zone; couriers deliver and collect the cash, or fail, retry, and finally return the parcel to the
+merchant; customers get an SMS at each step. Order intake, dispatch and messaging are separate
+services that talk through Kafka, so each can change and scale on its own.
 
 ---
 
@@ -167,7 +180,7 @@ Maven wrapper.
 # build + all tests (unit + Testcontainers: Postgres, Kafka KRaft, Redis)
 ./mvnw verify
 
-# full stack: Kafka (KRaft), Postgres, Redis, 5 services, the dashboard, Prometheus
+# full stack: Kafka (KRaft), Postgres, Redis, 5 services, the console, Prometheus
 docker compose up -d --build
 docker compose ps            # wait until the services are "healthy" (about 1 minute)
 
@@ -180,7 +193,7 @@ docker compose down -v
 
 | URL | What |
 |---|---|
-| http://localhost:3100 | **ops dashboard** (`ops` / `Passw0rd!`); set `DASHBOARD_PORT` to change the port |
+| http://localhost:3100 | **MSE Dispatch console** (`ops` / `Passw0rd!`); set `DASHBOARD_PORT` to change the port |
 | http://localhost:8080 | gateway (use this for every API call) |
 | http://localhost:8082/swagger-ui.html | order-service OpenAPI (also 8081, 8083, 8084) |
 | http://localhost:9090 | Prometheus (try `parcel_outbox_pending`, `parcel_orders_placed_total`, `resilience4j_circuitbreaker_state`) |
@@ -190,21 +203,21 @@ docker compose down -v
 Memory: each JVM runs with `-XX:MaxRAMPercentage=55 -XX:+UseSerialGC -XX:TieredStopAtLevel=1` inside a
 360 MB container limit. Kafka gets a 256 MB heap. The whole stack fits in about 2 GB.
 
-Demo users (password `Passw0rd!`): `ops`, `merchant.atlas` (M-1001), `merchant.souk` (M-1002),
+Sample users (password `Passw0rd!`): `ops`, `merchant.atlas` (M-1001), `merchant.souk` (M-1002),
 `courier.casa1`, `courier.casa2`, `courier.rabat1`.
 
-## Dashboard
+## The console
 
-`dashboard/` is a live ops console: **Vite, React 18, TypeScript, Tailwind, TanStack Query, framer-motion,
+`dashboard/` is the MSE Dispatch operations console: **Vite, React 18, TypeScript, Tailwind, TanStack Query, framer-motion,
 Radix**, served by nginx in the compose stack. It talks only to the gateway, through the same origin.
 
 ```bash
-docker compose up -d --build          # the dashboard is part of the stack
+docker compose up -d --build          # the console is part of the stack
 ./scripts/seed-dashboard.sh           # optional: 9 orders spread across every column
 open http://localhost:3100            # ops / Passw0rd!
 ```
 
-**The 30-second demo:** sign in as `ops`, click **Simulate → New order, delivered**. The card appears in
+**Try it in 30 seconds:** sign in as `ops`, click **Simulate → New order, delivered**. The card appears in
 *Created*, jumps to *Assigned* about a second later (outbox → Kafka → dispatch), then moves to *Out for
 delivery* and *Delivered*. KPIs, courier load and the SMS feed update with it. **Simulate → New order,
 failed 3 times** shows the saga: three failed attempts, then *Returned*. Click any card to see its timeline:
@@ -257,7 +270,7 @@ sequenceDiagram
   stale-sequence rule as order-service.
 * Notifications are pushed by a `@TransactionalEventListener`, so only after their transaction commits.
 * **Auth trade-off:** `EventSource` cannot send an `Authorization` header. The options were: a token in the
-  query string, a cookie, or `fetch()` streaming with headers. I chose a query parameter, with limits:
+  query string, a cookie, or `fetch()` streaming with headers. The stream uses a query parameter, with limits:
   the token lives 60 seconds and is marked `token_use=stream`; the stream endpoint accepts nothing else;
   the gateway and the service accept query tokens **only on that path**; nginx turns off the access log
   for it. A cookie would keep tokens out of URLs, but it brings CSRF and cookie-domain setup to a
@@ -266,7 +279,7 @@ sequenceDiagram
   new token and reconnects. Each `hello` refetches the queries, which fills any gap. Polling every 30 s
   stays as a safety net.
 
-### Dashboard tests
+### Console tests
 
 ```bash
 cd dashboard
@@ -275,9 +288,14 @@ npx playwright install chromium
 npm run e2e                 # Playwright against the running stack: login, create, simulate, DELIVERED
 ```
 
-| Screens | |
+| Order timeline with trace ids | Dark mode, French |
 |---|---|
-| ![Order timeline with correlation ids](docs/img/dashboard-timeline.png) | ![Dark mode, French](docs/img/dashboard-dark-fr.png) |
+| ![Order timeline](docs/screenshots/order-timeline.png) | ![Dark mode, French](docs/screenshots/board-dark-fr.png) |
+| **New order** | **Sign in** |
+| ![New order](docs/screenshots/create-order.png) | ![Sign in](docs/screenshots/login.png) |
+
+Also in the shell: a product switcher (Dispatch, Settle, Copilot), a user menu, skip link and
+visible focus rings. Brand tokens are shared with MSE Settle and MSE Copilot.
 
 ## curl walkthrough
 
@@ -329,7 +347,7 @@ Errors come back as RFC 9457 problem details, with the correlation id:
 
 ```json
 {
-  "type": "https://parcel.benzaazaa.com/problems/validation",
+  "type": "https://dispatch.msetransport.com/problems/validation",
   "title": "Validation failed",
   "status": 400,
   "detail": "One or more fields are invalid",
@@ -439,8 +457,8 @@ live in the services.
 
 ## Tests
 
-`./mvnw verify` runs **164 Java tests**. Docker is needed for the integration tests. The dashboard adds
-25 Vitest tests and a Playwright end-to-end test (see [Dashboard tests](#dashboard-tests)).
+`./mvnw verify` runs **164 Java tests**. Docker is needed for the integration tests. The console adds
+26 Vitest tests and a Playwright end-to-end test (see [Console tests](#console-tests)).
 
 | Kind | Examples |
 |---|---|
@@ -452,7 +470,7 @@ live in the services.
 | Gateway (Testcontainers Redis) | 401 without token, wrong issuer or foreign key rejected, routing with headers, 429 above the token bucket, query token only on the stream path, health fan-out |
 | Live stream | session token refused on the SSE endpoint, stream token accepted; Testcontainers: Kafka event reaches a real HTTP SSE client, stored once, notification pushed after commit |
 
-## What I would do next
+## Roadmap
 
 * **Kubernetes**: Helm chart, readiness and liveness probes (already exposed), HPA on consumer lag
   (KEDA), and Kafka through Strimzi.
@@ -462,8 +480,8 @@ live in the services.
 * **Keycloak** (or Spring Authorization Server) instead of the home-made issuer: refresh tokens, key
   rotation (multiple `kid`s in the JWKS), MFA for ops. The resource servers would not change.
 * **Debezium** CDC for the outbox instead of polling, and an outbox cleanup job based on partitions.
-* **Settlement service**: reconcile cash collected by couriers against `DELIVERED` events, the
-  money side of COD.
+* **Settlement integration**: feed `DELIVERED` events straight into MSE Settle (the money side of
+  COD, today driven by courier remittance files).
 * Contract tests between producers and consumers (Spring Cloud Contract or Pact), and k6 load tests
   on the gateway.
 * Courier assignment that uses live location and capacity, with a manual override UI for ops.
