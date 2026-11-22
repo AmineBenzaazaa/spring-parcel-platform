@@ -1,13 +1,15 @@
 import { useState, type FormEvent } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { ArrowRight, Languages, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Check, Languages, ShieldCheck } from 'lucide-react';
+import { BRAND, productTitle } from '@/brand/brand';
 import { ApiError } from '@/lib/api';
 import { NotOpsError, useAuth } from '@/lib/auth';
 import { useI18n } from '@/lib/i18n';
 import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/Button';
 
-const DEMO_USERS = [
+export const DEMO_PASSWORD = 'Passw0rd!';
+export const DEMO_USERS = [
   { username: 'ops', role: 'OPS' },
   { username: 'merchant.atlas', role: 'MERCHANT' },
   { username: 'courier.casa1', role: 'COURIER' },
@@ -18,7 +20,8 @@ export function LoginPage() {
   const { t, lang, setLang } = useI18n();
   const navigate = useNavigate();
   const [username, setUsername] = useState('ops');
-  const [password, setPassword] = useState('');
+  // Prefilled with the working demo account, so the first click on "Sign in" succeeds.
+  const [password, setPassword] = useState(DEMO_PASSWORD);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -41,53 +44,79 @@ export function LoginPage() {
   };
 
   const input = 'focus-ring h-10 w-full rounded-lg border border-line bg-panel px-3 text-sm text-fg placeholder:text-faint hover:border-faint/60';
+  const points = [t('login.point1'), t('login.point2'), t('login.point3')];
 
   return (
-    <div className="relative flex min-h-full items-center justify-center overflow-hidden px-4 py-12">
-      <div aria-hidden className="pointer-events-none absolute inset-0 [background-image:radial-gradient(rgb(var(--line))_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]" />
-      <div aria-hidden className="pointer-events-none absolute left-1/2 top-[18%] h-72 w-72 -translate-x-1/2 rounded-full bg-accent/20 blur-3xl" />
-      <button onClick={() => setLang(lang === 'en' ? 'fr' : 'en')}
-        className="focus-ring absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[12px] font-medium text-muted hover:bg-subtle hover:text-fg">
-        <Languages className="h-3.5 w-3.5" />{t('lang.switch')}
-      </button>
-
-      <div className="relative w-full max-w-[380px]">
-        <div className="mb-6 flex flex-col items-center text-center">
-          <Logo size={40} />
-          <h1 className="mt-4 text-xl font-semibold tracking-tight">{t('login.title')}</h1>
-          <p className="mt-1 text-[13.5px] text-muted">{t('login.subtitle')}</p>
+    <div className="grid min-h-full lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+      {/* brand panel */}
+      <aside className="relative hidden overflow-hidden bg-accent text-accent-fg lg:flex lg:flex-col lg:justify-between lg:p-12">
+        <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.12] [background-image:radial-gradient(currentColor_1px,transparent_1px)] [background-size:22px_22px]" />
+        <div aria-hidden className="pointer-events-none absolute -bottom-40 -end-40 h-[28rem] w-[28rem] rounded-full bg-signal/25 blur-3xl" />
+        <div className="relative flex items-center gap-2.5">
+          <Logo size={34} onBrand />
+          <span className="text-[17px] font-semibold tracking-tight">{BRAND.name} <span className="font-normal opacity-80">{BRAND.product}</span></span>
         </div>
-
-        <form onSubmit={submit} className="panel space-y-4 p-6" data-testid="login-form">
-          <div className="space-y-1.5">
-            <label htmlFor="username" className="text-[12.5px] font-medium">{t('login.username')}</label>
-            <input id="username" className={input} value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="username" />
-          </div>
-          <div className="space-y-1.5">
-            <label htmlFor="password" className="text-[12.5px] font-medium">{t('login.password')}</label>
-            <input id="password" type="password" className={input} value={password} onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password" placeholder="••••••••" />
-          </div>
-          {error && <p role="alert" className="rounded-md bg-rose-500/10 px-3 py-2 text-[12.5px] text-rose-700 dark:text-rose-300">{error}</p>}
-          <Button type="submit" variant="primary" className="w-full" loading={loading}>
-            {t('login.submit')}{!loading && <ArrowRight className="h-4 w-4" />}
-          </Button>
-        </form>
-
-        <div className="mt-5 rounded-xl border border-dashed border-line p-4">
-          <p className="label mb-2.5 flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5" />{t('login.demo')}</p>
-          <div className="flex flex-wrap gap-1.5">
-            {DEMO_USERS.map((u) => (
-              <button key={u.username} type="button" onClick={() => { setUsername(u.username); setPassword('Passw0rd!'); }}
-                className="focus-ring inline-flex items-center gap-1.5 rounded-md border border-line bg-panel px-2 py-1 text-[12px] hover:bg-subtle">
-                <span className="font-mono">{u.username}</span>
-                <span className="text-[10px] font-semibold text-faint">{u.role}</span>
-              </button>
+        <div className="relative max-w-[460px]">
+          <h2 className="text-[32px] font-semibold leading-[1.15] tracking-tight">{t('login.heroTitle')}</h2>
+          <p className="mt-4 text-[15px] leading-relaxed opacity-85">{t('login.heroBody')}</p>
+          <ul className="mt-7 space-y-2.5">
+            {points.map((p) => (
+              <li key={p} className="flex items-center gap-2.5 text-[14px]">
+                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/15"><Check className="h-3 w-3" aria-hidden /></span>{p}
+              </li>
             ))}
-          </div>
-          <p className="mt-2.5 text-[12px] text-faint">{t('login.demoHint')}</p>
+          </ul>
         </div>
-      </div>
+        <p className="relative text-[12px] opacity-70">{BRAND.suite} · Dispatch · Settle · Copilot</p>
+      </aside>
+
+      {/* form */}
+      <main className="relative flex items-center justify-center px-4 py-12">
+        <button onClick={() => setLang(lang === 'en' ? 'fr' : 'en')}
+          className="focus-ring absolute end-4 top-4 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[12px] font-medium text-muted hover:bg-subtle hover:text-fg">
+          <Languages className="h-3.5 w-3.5" />{t('lang.switch')}
+        </button>
+
+        <div className="w-full max-w-[380px]">
+          <div className="mb-7">
+            <span className="lg:hidden"><Logo size={36} /></span>
+            <h1 className="mt-4 text-[22px] font-semibold tracking-tight lg:mt-0">{t('login.title', { product: productTitle() })}</h1>
+            <p className="mt-1.5 text-[13.5px] text-muted">{t('login.subtitle')}</p>
+          </div>
+
+          <form onSubmit={submit} className="space-y-4" data-testid="login-form">
+            <div className="space-y-1.5">
+              <label htmlFor="username" className="text-[12.5px] font-medium">{t('login.username')}</label>
+              <input id="username" className={input} value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="username" />
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="password" className="text-[12.5px] font-medium">{t('login.password')}</label>
+              <input id="password" type="password" className={input} value={password} onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password" placeholder="••••••••" />
+            </div>
+            {error && <p role="alert" className="rounded-md bg-danger/10 px-3 py-2 text-[12.5px] text-danger">{error}</p>}
+            <Button type="submit" variant="primary" className="h-10 w-full" loading={loading}>
+              {t('login.submit')}{!loading && <ArrowRight className="h-4 w-4" />}
+            </Button>
+          </form>
+
+          <div className="mt-6 rounded-xl border border-line bg-subtle/60 p-4">
+            <p className="label mb-2.5 flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5" />{t('login.demo')}</p>
+            <div className="flex flex-wrap gap-1.5">
+              {DEMO_USERS.map((u) => (
+                <button key={u.username} type="button" data-testid={`demo-${u.username}`}
+                  onClick={() => { setUsername(u.username); setPassword(DEMO_PASSWORD); setError(null); }}
+                  className={`focus-ring inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-[12px] hover:bg-panel ${
+                    username === u.username ? 'border-accent/60 bg-accent/[0.07]' : 'border-line bg-panel'}`}>
+                  <span className="font-mono">{u.username}</span>
+                  <span className="text-[10px] font-semibold text-faint">{u.role}</span>
+                </button>
+              ))}
+            </div>
+            <p className="mt-2.5 text-[12px] text-muted">{t('login.demoHint')}</p>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
