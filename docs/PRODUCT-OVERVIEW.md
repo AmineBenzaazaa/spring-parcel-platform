@@ -59,7 +59,7 @@ Operations teams need to see all of this as it happens.
 
 | Suite | Count |
 |---|---|
-| Java tests across the six services (JUnit 5, Mockito, `@WebMvcTest`, Testcontainers Postgres, Kafka and Redis) | 164 |
+| Java tests across the five services and two shared libraries (JUnit 5, Mockito, `@WebMvcTest`, Testcontainers Postgres, Kafka and Redis) | 164 |
 | Console tests (Vitest + Testing Library) | 26 |
 | Browser end-to-end (Playwright: sign in, create an order, simulate the delivery, see it delivered live) | 1 |
 
