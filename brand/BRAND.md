@@ -92,6 +92,45 @@ it, and what to do next.
 | Amounts always with MAD and two decimals | Rounded or float amounts |
 | English or French, one language per sentence | Franglais |
 
+## Using color in the product
+
+- **Navy is the product.** Primary buttons, active navigation, links, focus rings, icon tiles and
+  avatars are navy (`accent`) or a navy tint (`accent/10`). One icon-tile style everywhere: a
+  navy-tinted square with a navy icon.
+- **Green means "arrived, paid, healthy".** Use `signal` deliberately: matched and settled states,
+  the reported/remitted chart series, healthy progress bars, net remitted, and the destination dot
+  (a small green dot) on the active navigation item. Never as decoration or for body text.
+- **Warning and danger only when the state means it.** Amber (`warn`) for "needs a look" (amount
+  mismatch, behind on reporting); red (`danger`) for money missing (nothing reported, missing from
+  the statement, discrepancies). Keep them subtle: tinted backgrounds (`/10`), not solid fills.
+- **Say it once.** If a column already shows an amount, don't repeat it in a coloured sentence next
+  to it. Colour the amount by severity and add at most one small status chip ("On track",
+  "Behind", "Nothing reported", "Settled").
+- **Progress bars**: green from 80 %, amber below, red at 0 (with a red-tinted track so an empty bar
+  is still visible).
+- **Charts**: the comparison series ("Expected") is a light navy tint (`accent/25`); the result
+  series ("Reported", "Remitted") is the green signal. Bars have rounded tops (6 px), legends use
+  round dots in the same colours, axes use Inter in the muted colour.
+- **Surfaces**: one card radius (12 px, `rounded-xl`), one border (`line`), one shadow level
+  (`shadow-card`); dialogs and menus use the lifted shadow. Spacing follows 4 / 8 / 12 / 16 / 24 / 32.
+
+## Numbers & tables
+
+- **Amounts use Inter with tabular figures** (`tabular-nums`), right-aligned, two decimals, with
+  "MAD" in the muted colour after the number. Monospace is only for identifiers: tracking numbers
+  (`SPX-100007`), file names and fingerprints.
+- **Locale-aware formatting**: `1,250.00 MAD` and `45.6%` in English; `1 250,00 MAD` and `45,6 %`
+  in French (non-breaking space before %, as French typography requires).
+- **Plurals are real**: "1 row", "2 rows"; "1 line needs attention". French treats 0 and 1 as
+  singular ("0 ligne").
+- **No raw codes in the UI**: `AMOUNT_MISMATCH` is "Amount mismatch", `OPEN` is "open". The code
+  can appear in a "Technical details" expander, never in the main text.
+- **Every domain term has a tooltip** from the shared glossary (`brand/content/suite-content.ts`):
+  COD, remittance, statement, reconciliation, dispute, net remitted, discrepancy, attempts,
+  returned. The same glossary, in English and French, in all three apps.
+- **Empty is a state, not a blank**: say what is missing and what to do next; never show a
+  "verified" badge when nothing came from the data.
+
 ## Do / don't
 
 - **Do** keep one navy primary action per screen. **Don't** make every button navy.
