@@ -29,7 +29,7 @@ export const GLOSSARY: Record<TermKey, Record<SuiteLang, { term: string; definit
   },
   dispute: {
     en: { term: 'Dispute', definition: 'A formal claim against the courier for a line that doesn’t match. Finance reviews it and decides whether the courier pays.' },
-    fr: { term: 'Litige', definition: 'Une réclamation formelle auprès du livreur pour une ligne qui ne correspond pas. La finance l’examine et décide si le livreur paie.' },
+    fr: { term: 'Litige', definition: 'Une réclamation formelle auprès du livreur pour une ligne qui ne correspond pas. La finance l’étudie et décide si le livreur paie.' },
   },
   netRemitted: {
     en: { term: 'Net remitted', definition: 'What actually reached your bank: the cash the courier reported, minus its fees.' },
