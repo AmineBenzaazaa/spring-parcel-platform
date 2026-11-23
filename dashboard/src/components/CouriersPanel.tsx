@@ -8,10 +8,10 @@ import { Skeleton } from './ui/Skeleton';
 import { EmptyState } from './ui/EmptyState';
 
 const availabilityStyle: Record<Availability, string> = {
-  ON_ROUTE: 'bg-amber-500',
-  AT_HUB: 'bg-sky-500',
-  IDLE: 'bg-emerald-500',
-  OFFLINE: 'bg-zinc-400',
+  ON_ROUTE: 'bg-warn',
+  AT_HUB: 'bg-accent',
+  IDLE: 'bg-signal',
+  OFFLINE: 'bg-faint',
 };
 
 /** Soft cap used only to draw the load bar. */
@@ -42,7 +42,7 @@ export function CouriersPanel() {
           {couriers.data.map((c) => (
             <li key={c.id} className="flex items-center gap-3 px-4 py-2.5">
               <span className="relative">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-subtle text-[11px] font-semibold text-muted ring-1 ring-line">
+                <span className="avatar h-8 w-8 text-[11px]">
                   {initials(c.name)}
                 </span>
                 <span className={clsx('absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2 ring-panel', availabilityStyle[c.availability])} />
@@ -55,7 +55,7 @@ export function CouriersPanel() {
                 <div className="mt-1.5 flex items-center gap-2">
                   <div className="h-1 flex-1 overflow-hidden rounded-full bg-subtle">
                     <div
-                      className={clsx('h-full rounded-full transition-[width] duration-500', c.activeLoad >= CAPACITY ? 'bg-rose-500' : 'bg-accent')}
+                      className={clsx('h-full rounded-full transition-[width] duration-500', c.activeLoad >= CAPACITY ? 'bg-danger' : 'bg-accent')}
                       style={{ width: `${Math.min(100, (c.activeLoad / CAPACITY) * 100)}%` }}
                     />
                   </div>

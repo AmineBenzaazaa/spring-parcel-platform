@@ -69,7 +69,7 @@ export function OrderDrawer({ orderId, onClose, sim }: {
       icon: n.channel === 'SMS' ? 'sms' : 'log',
       title: t('event.notification', { channel: n.channel, status: n.status }),
       detail: n.error ?? n.message,
-      tone: n.status === 'SENT' ? 'text-emerald-600 dark:text-emerald-300' : n.status === 'FAILED' ? 'text-rose-600 dark:text-rose-300' : 'text-amber-600 dark:text-amber-300',
+      tone: n.status === 'SENT' ? 'text-signal-ink-ink' : n.status === 'FAILED' ? 'text-danger' : 'text-warn',
     }));
     return [...events, ...notes].sort((a, b) => a.at.localeCompare(b.at));
   }, [timeline.data, notifications.data, t, delivery?.maxAttempts]);
@@ -106,7 +106,7 @@ export function OrderDrawer({ orderId, onClose, sim }: {
                 <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3">
                   <Info label={t('drawer.recipient')}>
                     <span className="font-medium">{order.recipientName}</span>
-                    {order.recipientPhone && <span className="block font-mono text-[12px] text-muted">{formatMoroccanPhone(order.recipientPhone)}</span>}
+                    {order.recipientPhone && <span className="block text-[12px] tabular-nums text-muted">{formatMoroccanPhone(order.recipientPhone)}</span>}
                   </Info>
                   <Info label={t('drawer.cod')}><span className="text-[15px] font-semibold tabular-nums">{formatMad(order.codAmount, lang)}</span></Info>
                   <Info label={t('create.address')}>
@@ -148,7 +148,7 @@ export function OrderDrawer({ orderId, onClose, sim }: {
                           {!busy && <Play className="h-3.5 w-3.5" />}{t('actions.simulateDelivery')}
                         </Button>
                         <Button size="sm" variant="ghost" disabled={busy} onClick={() => sim.fail(order.id)} data-testid="simulate-failure"
-                          className="text-rose-600 hover:bg-rose-500/10 hover:text-rose-600 dark:text-rose-400">
+                          className="text-danger hover:bg-danger/10 hover:text-danger">
                           <Undo2 className="h-3.5 w-3.5" />{t('actions.failDelivery')}
                         </Button>
                       </>
@@ -176,7 +176,7 @@ export function OrderDrawer({ orderId, onClose, sim }: {
                               {r.icon === 'log' && <Terminal className="h-3 w-3" />}
                               {r.title}
                             </span>
-                            <time className="shrink-0 font-mono text-[11px] tabular-nums text-faint" dateTime={r.at}>{formatTime(r.at, lang, true)}</time>
+                            <time className="shrink-0 text-[11px] tabular-nums text-faint" dateTime={r.at}>{formatTime(r.at, lang, true)}</time>
                           </div>
                           {r.detail && <p className="mt-0.5 text-[12px] leading-snug text-muted">{r.detail}</p>}
                           {r.correlationId && (

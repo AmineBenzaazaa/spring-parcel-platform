@@ -73,7 +73,7 @@ export const OrderCard = memo(function OrderCard({ order, courierName, attempts,
         <span className="inline-flex min-w-0 items-center gap-1.5 text-[12px] text-muted">
           {courierName ? (
             <>
-              <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent/15 text-[8px] font-semibold text-accent">
+              <span className="avatar h-5 w-5 text-[8.5px]">
                 {initials(courierName)}
               </span>
               <span className="truncate">{courierName}</span>
@@ -87,11 +87,11 @@ export const OrderCard = memo(function OrderCard({ order, courierName, attempts,
         </span>
         {attempts > 0 && (
           <span
-            title={t('board.attempts', { n: attempts, max: maxAttempts })}
+            title={t('attempts.hint', { n: attempts, max: maxAttempts })}
             className={clsx(
               'inline-flex shrink-0 items-center gap-1 rounded px-1.5 py-0.5 text-[10.5px] font-medium tabular-nums',
               attempts >= maxAttempts && order.status !== 'DELIVERED'
-                ? 'bg-rose-500/10 text-rose-600 dark:text-rose-300'
+                ? 'bg-danger/10 text-danger'
                 : 'bg-subtle text-muted',
             )}
           >

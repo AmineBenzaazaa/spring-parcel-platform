@@ -12,17 +12,17 @@ import { Skeleton } from './ui/Skeleton';
 import { EmptyState } from './ui/EmptyState';
 
 const statusTone: Record<NotificationStatus, string> = {
-  SENT: 'text-emerald-600 bg-emerald-500/10 dark:text-emerald-300',
-  FAILED: 'text-rose-600 bg-rose-500/10 dark:text-rose-300',
-  SKIPPED: 'text-amber-600 bg-amber-500/10 dark:text-amber-300',
+  SENT: 'text-signal-ink bg-signal/10-ink',
+  FAILED: 'text-danger bg-danger/10',
+  SKIPPED: 'text-warn bg-warn/10',
 };
 
 function CircuitPill({ state }: { state: CircuitState }) {
   const { t } = useI18n();
   const tone =
-    state === 'CLOSED' ? 'text-emerald-700 bg-emerald-500/10 ring-emerald-500/25 dark:text-emerald-300'
-      : state === 'OPEN' || state === 'FORCED_OPEN' ? 'text-rose-700 bg-rose-500/10 ring-rose-500/25 dark:text-rose-300'
-        : 'text-amber-700 bg-amber-500/10 ring-amber-500/25 dark:text-amber-300';
+    state === 'CLOSED' ? 'text-signal-ink bg-signal/10 ring-signal/25-ink'
+      : state === 'OPEN' || state === 'FORCED_OPEN' ? 'text-danger bg-danger/10 ring-danger/25'
+        : 'text-warn bg-warn/10 ring-warn/25';
   const Icon = state === 'CLOSED' ? ShieldCheck : state === 'OPEN' ? ShieldAlert : ShieldHalf;
   const key = (['CLOSED', 'OPEN', 'HALF_OPEN', 'DISABLED'].includes(state) ? `circuit.${state}` : 'circuit.DISABLED') as MessageKey;
   return (
@@ -68,7 +68,7 @@ export function NotificationsFeed() {
             title={smsBroken ? t('notifications.restoreSms') : t('notifications.breakSms')}
             aria-label={smsBroken ? t('notifications.restoreSms') : t('notifications.breakSms')}
             className={clsx('focus-ring inline-flex h-6 w-6 items-center justify-center rounded-md transition-colors',
-              smsBroken ? 'bg-rose-500/10 text-rose-600 hover:bg-rose-500/20' : 'text-faint hover:bg-subtle hover:text-fg')}
+              smsBroken ? 'bg-danger/10 text-danger hover:bg-danger/20' : 'text-faint hover:bg-subtle hover:text-fg')}
           >
             {smsBroken ? <Zap className="h-3.5 w-3.5" /> : <ZapOff className="h-3.5 w-3.5" />}
           </button>
@@ -104,7 +104,7 @@ export function NotificationsFeed() {
                     <p className="mt-0.5 line-clamp-2 text-[12.5px] leading-snug text-fg/90" title={n.error ?? n.message}>
                       {n.message}
                     </p>
-                    {n.error && <p className="mt-0.5 truncate text-[11px] text-rose-600 dark:text-rose-300">{n.error}</p>}
+                    {n.error && <p className="mt-0.5 truncate text-[11px] text-danger">{n.error}</p>}
                   </div>
                 </div>
               </motion.li>

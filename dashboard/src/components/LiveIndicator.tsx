@@ -4,7 +4,7 @@ import type { LiveStatus } from '@/lib/live';
 
 export function LiveIndicator({ status }: { status: LiveStatus }) {
   const { t } = useI18n();
-  const color = status === 'connected' ? 'bg-emerald-500' : status === 'offline' ? 'bg-rose-500' : 'bg-amber-500';
+  const color = status === 'connected' ? 'bg-signal' : status === 'offline' ? 'bg-danger' : 'bg-warn';
   return (
     <span
       data-testid="live-indicator"

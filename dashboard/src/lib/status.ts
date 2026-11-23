@@ -31,16 +31,24 @@ export interface StatusStyle {
   ring: string;
 }
 
+// Brand semantic tones: navy = moving, green signal = delivered/paid, warn = retry, danger = failed,
+// neutral = waiting. RETURNED is neutral-danger: the parcel is back, no cash collected.
+const neutral: StatusStyle = { dot: 'bg-faint', text: 'text-muted', bg: 'bg-subtle', ring: 'ring-line' };
+const moving: StatusStyle = { dot: 'bg-accent', text: 'text-accent', bg: 'bg-accent/10', ring: 'ring-accent/25' };
+const signal: StatusStyle = { dot: 'bg-signal', text: 'text-signal-ink', bg: 'bg-signal/10', ring: 'ring-signal/25' };
+const warn: StatusStyle = { dot: 'bg-warn', text: 'text-warn', bg: 'bg-warn/10', ring: 'ring-warn/25' };
+const danger: StatusStyle = { dot: 'bg-danger', text: 'text-danger', bg: 'bg-danger/10', ring: 'ring-danger/25' };
+
 const styles: Record<string, StatusStyle> = {
-  CREATED: { dot: 'bg-zinc-400', text: 'text-zinc-600 dark:text-zinc-300', bg: 'bg-zinc-500/10', ring: 'ring-zinc-500/20' },
-  PENDING_ASSIGNMENT: { dot: 'bg-zinc-400', text: 'text-zinc-600 dark:text-zinc-300', bg: 'bg-zinc-500/10', ring: 'ring-zinc-500/20' },
-  ASSIGNED: { dot: 'bg-sky-500', text: 'text-sky-700 dark:text-sky-300', bg: 'bg-sky-500/10', ring: 'ring-sky-500/25' },
-  OUT_FOR_DELIVERY: { dot: 'bg-amber-500', text: 'text-amber-700 dark:text-amber-300', bg: 'bg-amber-500/10', ring: 'ring-amber-500/25' },
-  DELIVERED: { dot: 'bg-emerald-500', text: 'text-emerald-700 dark:text-emerald-300', bg: 'bg-emerald-500/10', ring: 'ring-emerald-500/25' },
-  DELIVERY_FAILED: { dot: 'bg-rose-500', text: 'text-rose-700 dark:text-rose-300', bg: 'bg-rose-500/10', ring: 'ring-rose-500/25' },
-  FAILED: { dot: 'bg-rose-500', text: 'text-rose-700 dark:text-rose-300', bg: 'bg-rose-500/10', ring: 'ring-rose-500/25' },
-  RETURNED: { dot: 'bg-violet-500', text: 'text-violet-700 dark:text-violet-300', bg: 'bg-violet-500/10', ring: 'ring-violet-500/25' },
-  CANCELLED: { dot: 'bg-zinc-300', text: 'text-zinc-500', bg: 'bg-zinc-500/10', ring: 'ring-zinc-500/20' },
+  CREATED: neutral,
+  PENDING_ASSIGNMENT: neutral,
+  ASSIGNED: moving,
+  OUT_FOR_DELIVERY: { ...moving, dot: 'bg-info', text: 'text-info', bg: 'bg-info/10', ring: 'ring-info/25' },
+  DELIVERED: signal,
+  DELIVERY_FAILED: warn,
+  FAILED: warn,
+  RETURNED: danger,
+  CANCELLED: neutral,
 };
 
 export function statusStyle(status: string): StatusStyle {

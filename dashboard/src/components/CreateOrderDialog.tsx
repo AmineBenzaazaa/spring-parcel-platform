@@ -40,7 +40,7 @@ function Field({ label, error, hint, children, htmlFor }: { label: string; error
     <div className="space-y-1.5">
       <label htmlFor={htmlFor} className="text-[12.5px] font-medium text-fg">{label}</label>
       {children}
-      {error ? <p role="alert" className="text-[12px] text-rose-600 dark:text-rose-400">{error}</p>
+      {error ? <p role="alert" className="text-[12px] text-danger">{error}</p>
         : hint ? <p className="text-[12px] text-faint">{hint}</p> : null}
     </div>
   );
@@ -48,7 +48,7 @@ function Field({ label, error, hint, children, htmlFor }: { label: string; error
 
 const inputClass = (error?: string) => clsx(
   'focus-ring h-9 w-full rounded-lg border bg-panel px-3 text-sm text-fg placeholder:text-faint transition-colors',
-  error ? 'border-rose-400 dark:border-rose-500/60' : 'border-line hover:border-faint/60',
+  error ? 'border-danger' : 'border-line hover:border-faint/60',
 );
 
 export function CreateOrderDialog({ open, onOpenChange, onCreated }: {
@@ -137,7 +137,7 @@ export function CreateOrderDialog({ open, onOpenChange, onCreated }: {
               <Field label={t('create.phone')} htmlFor="phone" error={errors.phone} hint={t('create.phoneHint')}>
                 <div className="relative">
                   <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-sm text-faint">🇲🇦</span>
-                  <input id="phone" inputMode="tel" className={clsx(inputClass(errors.phone), 'pl-9 font-mono text-[13px]')} value={form.phone}
+                  <input id="phone" inputMode="tel" className={clsx(inputClass(errors.phone), 'pl-9 tabular-nums text-[13px]')} value={form.phone}
                     onChange={set('phone')} placeholder="06 12 34 56 78" autoComplete="off" />
                 </div>
               </Field>

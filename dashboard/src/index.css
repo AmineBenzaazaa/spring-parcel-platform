@@ -33,6 +33,9 @@
   .focus-ring {
     @apply outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bg;
   }
+  .avatar {
+    @apply inline-flex shrink-0 items-center justify-center rounded-full bg-accent/10 font-semibold text-accent ring-1 ring-inset ring-accent/20;
+  }
   .scrollbar-thin {
     scrollbar-width: thin;
     scrollbar-color: rgb(var(--line)) transparent;
