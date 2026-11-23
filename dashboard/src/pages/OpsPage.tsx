@@ -9,8 +9,10 @@ import { OrderDrawer } from '@/components/OrderDrawer';
 import { TopBar } from '@/components/TopBar';
 import { useLiveStream } from '@/lib/live';
 import { useSimulation } from '@/lib/useSimulation';
+import { useI18n } from '@/lib/i18n';
 
 export function OpsPage() {
+  const { t } = useI18n();
   const live = useLiveStream(true);
   const sim = useSimulation();
   const [createOpen, setCreateOpen] = useState(false);
@@ -20,9 +22,10 @@ export function OpsPage() {
     <div className="min-h-full overflow-x-hidden">
       <TopBar live={live.status} sim={sim} onCreate={() => setCreateOpen(true)} />
       <div className="border-b border-line bg-panel/60">
-        <div className="mx-auto max-w-[1680px] px-4 py-2"><HealthStrip /></div>
+        <div className="mx-auto max-w-[1680px] px-4 py-2 sm:px-6"><HealthStrip /></div>
       </div>
-      <main className="mx-auto max-w-[1680px] space-y-4 px-4 py-4">
+      <main className="mx-auto max-w-[1680px] space-y-4 px-4 py-6 sm:px-6">
+        <p className="text-[13px] text-muted" data-testid="page-intro">{t('page.intro')}</p>
         <KpiTiles />
         <div className="grid grid-cols-1 gap-4 2xl:grid-cols-[minmax(0,1fr)_320px]">
           <Board onOpen={setSelected} onCreate={() => setCreateOpen(true)} />

@@ -3,6 +3,7 @@ import { LayoutGroup } from 'framer-motion';
 import { Inbox, PackagePlus } from 'lucide-react';
 import { useI18n, type MessageKey } from '@/lib/i18n';
 import { COLUMNS, statusStyle, type Column } from '@/lib/status';
+import { Hint } from './ui/Term';
 import { deliveriesByOrder, useCouriers, useDeliveries, useOrders } from '@/lib/queries';
 import { formatMad } from '@/lib/format';
 import type { Order } from '@/lib/types';
@@ -67,7 +68,9 @@ export function Board({ onOpen, onCreate }: { onOpen: (orderId: string) => void;
                   <div className="mb-2 flex items-center justify-between px-1.5 pt-0.5">
                     <span className="inline-flex min-w-0 items-center gap-2 whitespace-nowrap text-[12px] font-medium text-fg">
                       <StatusDot status={column} />
-                      {t(`status.${column}` as MessageKey)}
+                      <Hint label={t(`status.${column}` as MessageKey)} text={t(`column.${column}.hint` as MessageKey)} testId={`hint-${column}`}>
+                        {t(`status.${column}` as MessageKey)}
+                      </Hint>
                       <span className="rounded bg-panel px-1.5 text-[11px] tabular-nums text-muted ring-1 ring-line">{list.length}</span>
                     </span>
                     {list.length > 0 && <span className="hidden whitespace-nowrap pl-1 text-[11px] tabular-nums text-faint min-[1700px]:inline">{formatMad(cod, lang, true)}</span>}

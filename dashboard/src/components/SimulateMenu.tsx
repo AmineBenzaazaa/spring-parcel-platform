@@ -23,7 +23,7 @@ export function SimulateMenu({ sim }: { sim: ReturnType<typeof useSimulation> })
   return (
     <Menu.Root>
       <Menu.Trigger asChild>
-        <Button size="sm" loading={busy} data-testid="simulate-menu">
+        <Button size="sm" loading={busy} data-testid="simulate-menu" title={t('simulate.hint')}>
           {!busy && <Zap className="h-3.5 w-3.5" />}
           <span className="hidden sm:inline">{t('actions.simulate')}</span>
           <ChevronDown className="hidden h-3 w-3 text-faint sm:block" />

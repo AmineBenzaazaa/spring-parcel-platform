@@ -1,5 +1,7 @@
 import clsx from 'clsx';
-import { Languages, LogOut, Moon, PackagePlus, Sun } from 'lucide-react';
+import { useState } from 'react';
+import { CircleHelp, Languages, LogOut, Moon, PackagePlus, Sun } from 'lucide-react';
+import { HowItWorks } from './HowItWorks';
 import { useAuth } from '@/lib/auth';
 import { useI18n } from '@/lib/i18n';
 import type { LiveStatus } from '@/lib/live';
@@ -15,10 +17,11 @@ export function TopBar({ live, sim, onCreate }: { live: LiveStatus; sim: ReturnT
   const { t, lang, setLang } = useI18n();
   const { session, logout } = useAuth();
   const { theme, toggle } = useTheme();
+  const [howOpen, setHowOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-bg/80 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-[1680px] items-center gap-2 px-4 sm:gap-3">
+      <div className="mx-auto flex h-14 max-w-[1680px] items-center gap-2 px-4 sm:gap-3 sm:px-6">
         <ProductSwitcher />
         <span className="hidden h-5 w-px bg-line xl:block" aria-hidden />
         <span className="hidden whitespace-nowrap text-[13px] text-muted xl:inline">{t('app.tagline')}</span>
@@ -36,21 +39,22 @@ export function TopBar({ live, sim, onCreate }: { live: LiveStatus; sim: ReturnT
           <IconButton onClick={toggle} title={t('actions.theme')} aria-label={t('actions.theme')}>
             {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </IconButton>
-          <UserMenu username={session?.username ?? ''} onLogout={logout} />
+          <UserMenu username={session?.username ?? ''} onLogout={logout} onHowItWorks={() => setHowOpen(true)} />
         </div>
       </div>
+      <HowItWorks open={howOpen} onOpenChange={setHowOpen} />
     </header>
   );
 }
 
-function UserMenu({ username, onLogout }: { username: string; onLogout: () => void }) {
+function UserMenu({ username, onLogout, onHowItWorks }: { username: string; onLogout: () => void; onHowItWorks: () => void }) {
   const { t } = useI18n();
   const initials = username.replace(/[^a-z]/gi, '').slice(0, 2).toUpperCase();
   return (
     <Popover label={t('user.menu')} align="end" testId="user-menu"
       trigger={(open) => (
         <span className={clsx('flex items-center gap-2 rounded-full border border-line bg-panel py-0.5 pe-0.5 ps-0.5 transition-colors hover:bg-subtle sm:pe-3', open && 'bg-subtle')}>
-          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-accent/15 text-[11px] font-semibold text-accent">{initials}</span>
+          <span className="avatar h-7 w-7 text-[11px]">{initials}</span>
           <span className="hidden text-start leading-tight sm:block">
             <span className="block text-[12.5px] font-medium">{username}</span>
             <span className="block text-[10.5px] text-faint">{t('role.OPS')}</span>
@@ -64,6 +68,9 @@ function UserMenu({ username, onLogout }: { username: string; onLogout: () => vo
             <p className="truncate text-[12px] text-muted">{t('role.OPS')}</p>
           </div>
           <div className="pt-1.5">
+            <button type="button" role="menuitem" className={menuItem} data-testid="how-it-works-open" onClick={() => { close(); onHowItWorks(); }}>
+              <CircleHelp className="h-4 w-4 text-muted" aria-hidden />{t('help.howItWorks')}
+            </button>
             <button type="button" role="menuitem" className={menuItem} data-testid="logout" onClick={() => { close(); onLogout(); }}>
               <LogOut className="h-4 w-4 text-muted" aria-hidden />{t('actions.logout')}
             </button>

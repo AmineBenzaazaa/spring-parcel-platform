@@ -16,6 +16,17 @@ const en = {
   'login.point1': 'Live board, updated the moment a courier scans',
   'login.point2': 'Couriers assigned automatically by zone',
   'login.point3': 'Failed attempts retried, then returned to the merchant',
+  'help.howItWorks': 'How it works',
+  'health.label': 'System status',
+  'page.intro': 'Every cash-on-delivery parcel from order to doorstep, live. Each column is a step; cards move on their own as couriers report.',
+  'simulate.hint': 'Plays courier actions on sample orders (deliver, fail, return) so you can watch the board update live.',
+  'attempts.hint': 'Delivery attempt {n} of {max}. After the last failed attempt the parcel goes back to the merchant.',
+  'column.CREATED.hint': 'New orders waiting for a courier.',
+  'column.ASSIGNED.hint': 'A courier in the right zone has been assigned automatically.',
+  'column.OUT_FOR_DELIVERY.hint': 'The courier is on the way to the customer, cash to collect.',
+  'column.DELIVERED.hint': 'Delivered and paid in cash at the door.',
+  'column.DELIVERY_FAILED.hint': 'The attempt failed (customer absent, refused, phone off). It will be retried.',
+  'column.RETURNED.hint': 'Every attempt failed: the parcel goes back to the merchant. No cash collected.',
   'login.title': 'Sign in to {product}',
   'login.subtitle': 'Live console for the COD delivery platform.',
   'login.username': 'Username',
@@ -58,7 +69,7 @@ const en = {
   'board.noOrders': 'No orders yet',
   'board.noOrdersHint': 'Create an order or run the simulation to watch it move across the board.',
   'couriers.title': 'Couriers',
-  'couriers.load': '{n} active',
+  'couriers.load': '{n} active {n|parcel|parcels}',
   'couriers.onRoad': '{n} on the road',
   'couriers.OFFLINE': 'Offline',
   'couriers.ON_ROUTE': 'On route',
@@ -149,6 +160,17 @@ const fr: Record<MessageKey, string> = {
   'login.point1': 'Tableau en direct, mis à jour à chaque scan',
   'login.point2': 'Livreurs affectés automatiquement par zone',
   'login.point3': 'Échecs relancés, puis retour au marchand',
+  'help.howItWorks': 'Comment ça marche',
+  'health.label': 'État du système',
+  'page.intro': 'Chaque colis en paiement à la livraison, de la commande à la porte, en direct. Chaque colonne est une étape ; les cartes avancent seules quand les livreurs déclarent.',
+  'simulate.hint': 'Rejoue des actions de livreur sur des commandes exemples (livrer, échouer, retourner) pour voir le tableau se mettre à jour.',
+  'attempts.hint': 'Tentative {n} sur {max}. Après le dernier échec, le colis retourne au marchand.',
+  'column.CREATED.hint': 'Nouvelles commandes en attente d’un livreur.',
+  'column.ASSIGNED.hint': 'Un livreur de la bonne zone a été affecté automatiquement.',
+  'column.OUT_FOR_DELIVERY.hint': 'Le livreur est en route vers le client, espèces à encaisser.',
+  'column.DELIVERED.hint': 'Livré et payé en espèces à la porte.',
+  'column.DELIVERY_FAILED.hint': 'La tentative a échoué (client absent, refus, téléphone éteint). Elle sera relancée.',
+  'column.RETURNED.hint': 'Toutes les tentatives ont échoué : le colis retourne au marchand. Aucun encaissement.',
   'login.title': 'Connexion à {product}',
   'login.subtitle': 'Console en direct de la plateforme de livraison COD.',
   'login.username': "Nom d'utilisateur",
@@ -191,7 +213,7 @@ const fr: Record<MessageKey, string> = {
   'board.noOrders': 'Aucune commande',
   'board.noOrdersHint': 'Créez une commande ou lancez la simulation pour la voir traverser le tableau.',
   'couriers.title': 'Livreurs',
-  'couriers.load': '{n} actifs',
+  'couriers.load': '{n} {n|colis actif|colis actifs}',
   'couriers.onRoad': '{n} en tournée',
   'couriers.OFFLINE': 'Hors ligne',
   'couriers.ON_ROUTE': 'En tournée',
@@ -270,7 +292,14 @@ const dictionaries: Record<Lang, Record<MessageKey, string>> = { en, fr };
 
 export function translate(lang: Lang, key: MessageKey, vars?: Record<string, string | number>): string {
   let s = dictionaries[lang][key] ?? en[key] ?? key;
-  if (vars) for (const [k, v] of Object.entries(vars)) s = s.replaceAll(`{${k}}`, String(v));
+  if (vars) {
+    // plural forms: "{n|parcel|parcels}" picks by the number in vars.n (French: 0 and 1 are singular)
+    s = s.replace(/\{(\w+)\|([^|}]*)\|([^}]*)\}/g, (_, k: string, one: string, other: string) => {
+      const n = Number(String(vars[k] ?? '').replace(/[^\d.-]/g, ''));
+      return (lang === 'fr' ? n < 2 : n === 1) ? one : other;
+    });
+    for (const [k, v] of Object.entries(vars)) s = s.replaceAll(`{${k}}`, String(v));
+  }
   return s;
 }
 
