@@ -32,6 +32,38 @@ services that talk through Kafka, so each can change and scale on its own.
 
 ---
 
+## What is MSE Transport?
+
+MSE Transport is software for **cash-on-delivery (COD) e-commerce in Morocco**: the customer pays the
+courier in cash at the door, and the courier pays the merchant back later. Three products cover the
+whole journey of a parcel and its cash:
+
+```mermaid
+flowchart LR
+    A["Order created<br/><b>MSE Dispatch</b>"] --> B["Courier delivers<br/>and collects cash"]
+    B --> C["Courier sends a<br/>remittance statement (CSV)"]
+    C --> D["Reconciled line by line<br/><b>MSE Settle</b>"]
+    D --> E["Mismatches become<br/>disputes"]
+    D --> F["Questions answered<br/><b>MSE Copilot</b>"]
+    E --> F
+```
+
+- **MSE Dispatch** runs the deliveries: orders, courier assignment, attempts, customer SMS.
+- **MSE Settle** checks the courier's cash: every remittance line against the merchant's orders.
+- **MSE Copilot** answers questions about it in plain English or French, with checked figures.
+
+### Take the 2-minute tour
+
+1. `docker compose up -d --build`, wait about a minute, then `./scripts/seed-dashboard.sh`.
+2. Open http://localhost:3100 and click **Sign in** (the operations account `ops` is filled in).
+3. Read the board left to right: hover the ⓘ next to each column name to see what it means.
+4. Click **Simulate → New order, delivered**: the card moves from *Created* to *Delivered* on its own.
+5. Click any card to see its timeline: every step and every SMS sent to the customer.
+6. Click **Simulate → New order, failed 3 times** to watch a parcel go back to the merchant (*Returned*, 3/3).
+7. Account menu → **How it works** shows how Dispatch fits with Settle and Copilot.
+
+The same tour with screenshots: [`docs/TOUR.md`](docs/TOUR.md).
+
 ## The problem
 
 COD delivery has a few hard properties:
